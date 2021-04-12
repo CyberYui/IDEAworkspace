@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--modelVersion 声明项目描述符遵循哪一个POM模型版本。模型本身的版本很少改变，虽然如此，但它仍然是必不可少的，这是为了当Maven引入了新的特性或者其他模型变更的时候，确保稳定性。-->
+    <modelVersion>4.0.0</modelVersion>
+    <parent><!--被继承的父项目的构件标识符-->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId><!--被继承的父项目的全球唯一标识符-->
+        <version>2.4.4</version><!--被继承的父项目的版本-->
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <!--项目的全球唯一标识符，通常使用全限定的包名区分该项目和其他项目。并且构建时生成的路径也是由此生成， 如com.mycompany.app生成的相对路径为：/com/mycompany/app-->
+    <groupId>com.example</groupId>
+    <!-- 构件的标识符，它和group ID一起唯一标识一个构件。换句话说，你不能有两个不同的项目拥有同样的artifact ID和groupID；在某个特定的group ID下，artifact ID也必须是唯一的。构件是项目产生的或使用的一个东西，Maven为项目产生的构件包括：JARs，源码，二进制发布和WARs等。-->
+    <artifactId>demo</artifactId>
+    <!--项目产生的构件类型，例如jar、war、ear、pom。插件可以创建他们自己的构件类型，所以前面列的不是全部构件类型-->
+    <!--<packaging>war</packaging> -->
+    <!--项目当前版本，格式为:主版本.次版本.增量版本-限定版本号-->
+    <version>0.0.1-SNAPSHOT</version>
+    <!--项目的名称, Maven产生的文档用-->
+    <name>demo</name>
+    <!--项目主页的URL, Maven产生的文档用-->
+    <!--<url>http://www.missbe.cn</url>  -->
+    <!-- 项目的详细描述, Maven 产生的文档用。  当这个元素能够用HTML格式描述时（例如，CDATA中的文本会被解析器忽略，就可以包含HTML标 签），不鼓励使用纯文本描述。如果你需要修改产生的web站点的索引页面，你应该修改你自己的索引页文件，而不是调整这里的文档。-->
+    <description>Demo project for Spring Boot</description>
+    <!--描述了这个项目构建环境中的前提条件。
+    <prerequisites>
+            构建该项目或使用该插件所需要的Maven的最低版本
+        <maven/>
+    </prerequisites>-->
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+    <!--项目引入插件所需要的额外依赖-->
+    <dependencies>
+        <dependency>
+            <!--依赖的group ID-->
+            <groupId>org.springframework.boot</groupId>
+            <!--依赖的artifact ID-->
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <!--仅供system范围使用。注意，不鼓励使用这个元素，并且在新的版本中该元素可能被覆盖掉。该元素为依赖规定了文件系统上的路径。需要绝对路径而不是相对路径。推荐使用属性匹配绝对路径，例如${java.home}。-->
+            <scope>runtime</scope>
+            <!--当项目自身被依赖时，标注依赖是否传递。用于连续依赖时使用-->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!--构建项目需要的信息-->
+    <build>
+        <!--使用的插件列表 。-->
+        <plugins>
+            <!--plugin元素包含描述插件所需要的信息。-->
+            <plugin>
+                <!--插件在仓库里的group ID-->
+                <groupId>org.springframework.boot</groupId>
+                <!--插件在仓库里的artifact ID-->
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--当计算传递依赖时， 从依赖构件列表里，列出被排除的依赖构件集。即告诉maven你只依赖指定的项目，不依赖项目的依赖。此元素主要用于解决版本冲突问题-->
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
