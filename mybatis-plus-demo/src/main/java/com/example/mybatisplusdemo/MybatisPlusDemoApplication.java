@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+// 在一个 SpringBoot 应用中,只需要配置 @MapperScan 注解到 mapper 目录即可
 @MapperScan("com.example.mybatisplusdemo.mapper")
 public class MybatisPlusDemoApplication {
 
@@ -23,4 +24,18 @@ public class MybatisPlusDemoApplication {
 
 	// 我们可以看到集成MyBatis-Plus非常的简单，只需要引入 starter 工程，并配置 mapper 扫描路径即可
 	// 我甚至为本项目添加了一个 mysql 数据库 db_testmybatis,显然现在用不到了
+
+	/* 关于 mybatis-plus 的使用:
+	* <dependency>
+   * 	<groupId>com.baomidou</groupId>
+   * 	<artifactId>mybatis-plus</artifactId>
+   * 	<version>3.4.2</version>
+   * </dependency>
+	* 引入 MyBatis-Plus 之后请不要再次引入 MyBatis 以及 MyBatis-Spring，以避免因版本差异导致的问题
+	* 快照 SNAPSHOT 版本需要添加仓库，且版本号为快照版本
+	* <repository>
+	* 		<id>snapshots</id>
+	* 		<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+	* </repository>
+	*  */
 }

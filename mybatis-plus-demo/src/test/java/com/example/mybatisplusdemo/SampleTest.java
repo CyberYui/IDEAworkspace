@@ -16,7 +16,7 @@ import java.util.List;
 public class SampleTest {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserMapper userMapper;  //这里的报错可以忽略
 
     @Test
     public void testSelect(){
