@@ -1,10 +1,10 @@
-package com.example.accessingdatamysql;
+package com.example.accessingdatamysql_v2;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AccessingDataMysqlApplicationTests {
+class AccessingDataMysqlV2ApplicationTests {
 
 	@Test
 	void contextLoads() {
