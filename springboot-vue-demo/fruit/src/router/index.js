@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Pie from '../views/Pie.vue'
 import Table from '../views/Table.vue'
+import Edit from '../views/Edit.vue'
+import Add from '../views/Add.vue'
 
 Vue.use(VueRouter)
 
@@ -29,6 +31,16 @@ const routes = [
     path:'/table',
     name:'Table',
     component: () => import('../views/Table.vue')
+  },
+  {
+    path:'/edit',
+    name:'Edit',
+    component: () => import('../views/Edit.vue')
+  },
+  {
+    path:'/add',
+    name:'Add',
+    component: () => import('../views/Add.vue')
   }
 ]
 

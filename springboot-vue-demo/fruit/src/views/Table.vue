@@ -45,8 +45,10 @@
                 label="操作"
                 width="160">
             <template slot-scope="scope">
-                <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                <el-button type="text" size="small">编辑</el-button>
+                <!-- 当点击删除按钮的时候,会调用 fruitDelete 函数,并传入 scope.row 对象 -->
+                <el-button @click="fruitDelete(scope.row)" type="text" size="small">删除</el-button>
+                <el-button @click="fruitUpdate(scope.row)" type="text" size="small">修改</el-button>
+                <el-button @click="fruitFind(scope.row)" type="text" size="small">查找本项</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -56,8 +58,67 @@
     export default {
         name: "Table",
         methods: {
-            handleClick(row) {
-                console.log(row);
+            // 写出 fruitDelete 函数
+            fruitDelete(row) {
+                // 删除的时候只需要找到唯一标识即可,即找到数据库里面的 id 即可
+                // console.log(row);
+                // alert(row.id); // 提示id,看看能不能选中
+
+                // 弹框的js代码,从elementUI里面直接找即可
+                // 还是一样,在外部声明 this
+                let _this = this;
+                //开始执行
+                this.$confirm('此操作将永久删除'+row.name+'行内容, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 真正的删除函数,具体如何实现的看后面注释,那里的删除函数更为简洁
+                    axios.delete('http://localhost:8181/fruit/delete/'+row.id).then(function(response){
+                        if (response.data){
+                            _this.$alert(row.name+'行删除成功!','删除数据',{
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                    // 跳转到 /table ,也就是刷新当前页面
+                                    location.reload()
+                                }
+                            });
+                        }
+                    })
+                }).catch(() => {
+                    _this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+                // 从后台编写删除接口,提供给这里,然后这里去进行删除的 request
+                // 后端的 DeleteMapping 为 ("/delete/{id}") ,所以这里的/delete/两个/缺一不可
+                //     axios.delete('http://localhost:8181/fruit/delete/'+row.id).then(function (response) {
+                //         if(response.data){
+                //             alert('delete success!');
+                //         }
+                //     })
+            },
+
+            // 写出 fruitUpdate 函数
+            fruitUpdate(row){
+                // 我们需要先引导用户进入一个表单页面,这个页面的 mapping 是 edit
+                // 然后这个表单需要先在后台拿到现有的数据,然后才能说修改
+                this.$router.push('/edit?id='+row.id)
+            },
+
+            // 写出 fruitFind 函数
+            fruitFind(row){
+                // 还是一样,在外部声明 this
+                let _this = this;
+                // 查找本项的数据库内容就直接返回当前 id 对应的 url 即可
+                axios.get('http://localhost:8181/fruit/find/'+row.id).then(function (response) {
+                    // 控制台输出
+                    console.log(response.data);
+                    // 提示查找本项成功
+                    alert('本项存在!');
+                })
             }
         },
 
@@ -81,25 +142,10 @@
             })
         },
 
-        // data中的数据是假数据,内容都是死的,我们需要在交互之后覆盖这些数据
+        // data中的数据是假数据,内容都是死的,我们需要在交互之后覆盖内容,这里只保留一条
         data() {
             return {
                 tableData: [{
-                    id: '2016-05-02',
-                    name: '王小虎',
-                    sale: '上海',
-                    icon: '普陀区'
-                }, {
-                    id: '2016-05-02',
-                    name: '王小虎',
-                    sale: '上海',
-                    icon: '普陀区'
-                }, {
-                    id: '2016-05-02',
-                    name: '王小虎',
-                    sale: '上海',
-                    icon: '普陀区'
-                }, {
                     id: '2016-05-02',
                     name: '王小虎',
                     sale: '上海',
