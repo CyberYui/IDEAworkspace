@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    # \u914D\u7F6E\u6570\u636E\u5E93url,\u7528\u6237\u540D\u4EE5\u53CA\u5BC6\u7801
+    url: jdbc:mysql://localhost:3306/db_example
+    username: mybatisuser
+    password: ThePassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # \u914D\u7F6Emapper\u6587\u4EF6\u7684\u8DEF\u5F84,*\u8868\u793A\u5168\u90E8\u5F15\u5165
+  mapper-locations: classpath:com/southwind/mapper/xml/*.xml
+server:
+  port: 8181
