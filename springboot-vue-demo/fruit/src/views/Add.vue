@@ -1,19 +1,19 @@
 <template>
-    <el-form ref="fruitRules" :model="fruit" :rules="rules" label-width="80px" class="demo-ruleForm" style="width: 600px">
-        <el-form-item label="名称" prop="name">
-            <el-input v-model="fruit.name"></el-input>
-        </el-form-item>
-        <el-form-item label="销量" prop="sale">
-            <el-input v-model.number="fruit.sale"></el-input>
-        </el-form-item>
-        <el-form-item label="图片" prop="icon">
-            <el-input v-model="fruit.icon"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="onSubmit('fruitRules')">立即创建</el-button>
-            <el-button>取消</el-button>
-        </el-form-item>
-    </el-form>
+<el-form ref="fruitRules" :model="fruit" :rules="rules" label-width="80px" class="demo-ruleForm" style="width: 600px">
+    <el-form-item label="名称" prop="name">
+        <el-input v-model="fruit.name"></el-input>
+    </el-form-item>
+    <el-form-item label="销量" prop="sale">
+        <el-input v-model.number="fruit.sale"></el-input>
+    </el-form-item>
+    <el-form-item label="图片" prop="icon">
+        <el-input v-model="fruit.icon"></el-input>
+    </el-form-item>
+    <el-form-item>
+        <el-button type="primary" @click="onSubmit('fruitRules')">立即创建</el-button>
+        <el-button>取消</el-button>
+    </el-form-item>
+</el-form>
 </template>
 
 <script>
