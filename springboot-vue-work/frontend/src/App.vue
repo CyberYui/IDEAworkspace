@@ -4,7 +4,7 @@
         <!--比如在其外面加一层内容,或者直接添加背景什么的-->
         <!--也就是说 App.vue 会在每个 views 的外面都有内容显示-->
         <!--比如这里添加了一个导航栏-->
-        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+        <el-menu id="app" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
             <el-menu-item index="1">处理中心</el-menu-item>
             <el-submenu index="2">
                 <template slot="title">我的工作台</template>
@@ -66,6 +66,6 @@
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
         color: #2c3e50;
-        margin-top: 60px;
+        margin-bottom: 12px;
     }
 </style>
