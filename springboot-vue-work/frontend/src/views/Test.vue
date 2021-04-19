@@ -113,13 +113,18 @@
                 </template>
             </el-table-column>-->
         </el-table>
-
+        <!--分页-->
+        <el-pagination
+                small
+                layout="prev, pager, next"
+                :total="500">
+        </el-pagination>
     </div>
 </template>
 
 <script>
     export default {
-        name: 'Table',
+        name: 'Test',
         methods: {
             handleClick(row) {
                 console.log(row);
@@ -137,12 +142,12 @@
                     videos: '上海市普陀区金沙江路 1520 弄',
                     address: '上海市普陀区金沙江路 1521 弄'
                 }],
-                input:''
+                input: ''
             }
         }
     }
 </script>
 
-<style  scoped>
+<style scoped>
 
 </style>

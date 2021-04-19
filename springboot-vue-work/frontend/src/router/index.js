@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Chart from '../views/Chart.vue'
 import Table from '../views/Table.vue'
+import Test from '../views/Test.vue'
 
 // 设定使用 vueRouter
 Vue.use(VueRouter);
@@ -32,6 +33,11 @@ const routes = [
     path: '/table',
     name: 'Table',
     component: () => import('../views/Table.vue')
+  },
+  {
+    path:'/test',
+    name:'Test',
+    component: () => import('../views/Test.vue')
   }
 ];
 
