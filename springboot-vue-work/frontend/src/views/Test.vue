@@ -50,7 +50,7 @@
                     align="center"
                     prop="id"
                     label="序号"
-                    width="200">
+                    width="50">
             </el-table-column>
             <!--id 序号列结束-->
             <!--标题列-->
@@ -74,7 +74,10 @@
                     align="center"
                     prop="content"
                     label="内容"
-                    width="300">
+                    width="450"
+                    :show-overflow-tooltip="true">
+                <!-- 为了保证不让内容过长占用表格单格 -->
+                <!-- :show-overflow-tooltip="true" 使得一行的内容会在鼠标 hover 之后显示 -->
             </el-table-column>
             <!--内容列结束-->
             <!--图片地址列-->
@@ -102,10 +105,10 @@
                         width="200"
                         trigger="click">
                     <!--设定弹出框的 div 大小,并传输需要的图片路径-->
-                    <!--技术问题:这里的图片无法显示-->
-                    <div style="width:200px;height:200px;">
+                    <!--技术问题:这里的图片无法实时调取数据库内容然后显示-->
+                    <div style="height:200px;padding: 5px">
                         <img
-                                style="height:75px;"
+                                style="height:190px;"
                                 :src='"http://file06.16sucai.com/2016/0806/fe48f9d41b21a269ba9446c11308a0ec.jpg"'
                                 alt
                         />
@@ -183,49 +186,36 @@
                     align="center"
                     fixed="right"
                     label="操作"
-                    width="160px">
+                    width="200px">
                 <el-table-column
                         align="center"
                         label="修改"
-                        width="80px">
+                        width="100px">
                     <!--修改按钮-->
-                    <el-button
-                            size="mini"
-                            type="info"
-                            @click="upContent">修改
-                    </el-button>
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                type="info"
+                                icon="el-icon-edit-outline"
+                                @click="findContent(scope.row)">修改
+                        </el-button>
+                        <!-- 单击修改按钮之后会显示的 Dialog -->
+                    </template>
                 </el-table-column>
                 <!--删除按钮-->
                 <el-table-column
                         align="center"
                         label="删除"
-                        width="80px">
-                    <!-- 删除按钮的弹出确认框 -->
-                    <el-popover
-                            placement="bottom"
-                            width="160"
-                            v-model="visible">
-                        <p>确定删除吗？</p>
-                        <div style="text-align: right; margin: 0">
-                            <el-button
-                                    size="mini"
-                                    type="primary"
-                                    @click="visible = false">确定
-                            </el-button>
-                            <el-button
-                                    size="mini"
-                                    type="info"
-                                    @click="visible = false">取消
-                            </el-button>
-                        </div>
+                        width="100px">
+                    <template slot-scope="scope">
                         <el-button
+                                slot="reference"
                                 size="mini"
                                 type="danger"
-                                slot="reference"
-                                @click="delContent">删除
+                                icon="el-icon-delete"
+                                @click="delContent(scope.row)">删除
                         </el-button>
-                    </el-popover>
-                    <!-- 删除按钮的弹出框结束 -->
+                    </template>
                 </el-table-column>
             </el-table-column>
             <!--<el-table-column
@@ -255,7 +245,7 @@
             handleClick(row) {
                 console.log(row);
             },
-            // 添加按钮的 MessageBox 方法
+            // 添加内容方法
             addContent() {
                 // 重定义 this 防止之后无法使用
                 let _this = this;
@@ -289,29 +279,14 @@
                 // 看看是否调用
                 console.log('成功进入查看图片方法');
             },
-            // 修改内容的 MessageBox 方法
-            upContent() {
+            // 修改内容方法
+            // 实际上是通过 id 在数据库查找内容的方法
+            findContent(row) {
                 // 重定义 this 防止之后无法使用
                 let _this = this;
                 // 看看是否调用
                 console.log('成功进入修改方法');
-                // 开始提示 MessageBox
-                _this.$confirm('请输入需要修改的内容,带*号的为必填项', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning',
-                    center: true
-                }).then(() => {
-                    _this.$message({
-                        type: 'success',
-                        message: '修改成功!'
-                    });
-                }).catch(() => {
-                    _this.$message({
-                        type: 'warning',
-                        message: '已取消修改'
-                    });
-                });
+                // 新建一个 Dialog 收取内容
             },
             // 查找内容方法
             seContent() {
@@ -319,9 +294,42 @@
                 console.log('成功进入查询方法');
             },
             // 删除内容方法
-            delContent() {
+            delContent(row) {
+                // 重定义 this 防止之后无法使用
+                let _this = this;
                 // 看看是否调用
-                console.log('成功进入删除方法');
+                // alert(row.id);
+                // 开始提示 MessageBox
+                _this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 点击确认之后会删除本行内容
+                    // 通过 axios 跨域删除数据库相关内容
+                    axios.delete('http://localhost:8181/qrcodedb/delete/' + row.id).then(function (response) {
+                        if (response.data) {
+                            // 提示成功通知
+                            _this.$message({
+                                type: 'success',
+                                // 带着标题提示删除成功
+                                message: row.title + '删除成功!'
+                            });
+                            // 删除成功后自动刷新页面
+                            location.reload();
+                        } else {
+                            // 删除失败自动刷新页面显示结果
+                            alert('删除失败 ! 请联系管理员 ! ');
+                            location.reload();
+                        }
+                    });
+                }).catch(() => {
+                    // 当用户取消时的提示
+                    _this.$message({
+                        type: 'error',
+                        message: '已取消删除'
+                    });
+                });
             },
             // 查看二维码方法
             qrCodeCheck() {
@@ -333,6 +341,7 @@
                 // 看看是否调用
                 console.log('成功进入查看视频方法');
             }
+            // 修改表格行的内容
         },
         // methods 结束
 
@@ -341,7 +350,7 @@
             let _this = this;
             axios.get('http://localhost:8181/qrcodedb/list').then(function (response) {
                 _this.tableData = response.data;
-            })
+            });
         },
 
         // data 内容
@@ -349,6 +358,7 @@
             return {
                 tableData: [
                     // tableData 是一个数组,里面分条存放各种属性
+                    // 这里只展示一条内容,其实可以完全不用这则内容
                     {
                         id: '1',
                         title: '王小虎',
@@ -368,6 +378,6 @@
     }
 </script>
 
-<style scoped>
+<style lang="css">
 
 </style>
