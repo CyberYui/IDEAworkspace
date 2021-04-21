@@ -40,6 +40,10 @@ public class QrcodedbController {
     public Qrcodedb find(@PathVariable("id") Integer id){
         return this.qrcodedbService.getById(id);
     }
-    // 模仿通过主题删除内容
+
+    @PutMapping("/update")
+    public boolean update(@RequestBody Qrcodedb qrcodedb){
+        return this.qrcodedbService.updateById(qrcodedb);
+    }
 }
 

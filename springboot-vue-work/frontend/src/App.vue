@@ -22,18 +22,6 @@
             <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
         </el-menu>
         <router-view/>
-        <!--  <div id="app">-->
-        <!--    <img src="./assets/logo.png">-->
-        <!--    <div>-->
-        <!--      <p>-->
-        <!--        If Element is successfully added to this project, you'll see an-->
-        <!--        <code v-text="'<el-button>'"></code>-->
-        <!--        below-->
-        <!--      </p>-->
-        <!--      <el-button>el-button</el-button>-->
-        <!--    </div>-->
-        <!--    <HelloWorld msg="Welcome to Your Vue.js App"/>-->
-        <!--  </div>-->
     </div>
 </template>
 

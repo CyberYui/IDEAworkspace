@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Chart from '../views/Chart.vue'
 import Table from '../views/Table.vue'
 import Test from '../views/Test.vue'
+import Edit from '../views/Edit.vue'
 
 // 设定使用 vueRouter
 Vue.use(VueRouter);
@@ -38,6 +39,11 @@ const routes = [
     path:'/test',
     name:'Test',
     component: () => import('../views/Test.vue')
+  },
+  {
+    path:'/edit',
+    name:'Edit',
+    component: () => import('../views/Edit.vue')
   }
 ];
 

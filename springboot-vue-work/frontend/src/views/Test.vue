@@ -6,10 +6,43 @@
             <el-row>
                 <!--添加按钮-->
                 <el-button
-                        style="width: 27%"
+                        style="width: 27%; margin-right: 12px;"
                         type="success"
-                        @click="addContent">添加
+                        @click="dialogFormVisible = true">添加
                 </el-button>
+                <!-- 弹出表单内容 -->
+                <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+                    <el-form>
+                        <template slot-scope="scope">
+                            <el-form-item label="标题" :label-width="formLabelWidth">
+                                <el-input></el-input>
+                            </el-form-item>
+                            <el-form-item label="所属主题" :label-width="formLabelWidth">
+                                <el-input></el-input>
+                            </el-form-item>
+                            <!-- 测试时仅仅先使用下面这个条目 -->
+                            <el-form-item label="请在以下处输入内容,右侧会实时显示效果" :label-width="formLabelWidth">
+                                <el-input></el-input>
+                            </el-form-item>
+                            <!-- 条目结束 -->
+                            <el-form-item label="图片链接" :label-width="formLabelWidth">
+                                <el-input></el-input>
+                            </el-form-item>
+                            <el-form-item label="视频链接" :label-width="formLabelWidth">
+                                <el-input></el-input>
+                            </el-form-item>
+                            <el-button
+                                    type="success"
+                                    @click="addContent">确认添加
+                            </el-button>
+                            <el-button
+                                    type="info"
+                                    @click="calAdd">取消添加
+                            </el-button>
+                        </template>
+                    </el-form>
+                </el-dialog>
+                <!-- FormEnd -->
                 <!--刷新按钮-->
                 <el-button
                         style="width: 27%"
@@ -19,12 +52,10 @@
                     刷新
                 </el-button>
                 <!--搜索框-->
-                <!--起名searchData,将输入的数据进行绑定-->
                 <!--placeholder 里面的内容是用于提示的-->
                 <el-input
-                        :data="searchData"
-                        placeholder="请输入想要搜索的内容"
-                        v-model="input"
+                        v-model="searchData"
+                        placeholder="请输入标题,现仅支持标题的搜索"
                         style="width: 27%; margin-left: 12px;"
                         clearable>
                 </el-input>
@@ -199,7 +230,6 @@
                                 icon="el-icon-edit-outline"
                                 @click="findContent(scope.row)">修改
                         </el-button>
-                        <!-- 单击修改按钮之后会显示的 Dialog -->
                     </template>
                 </el-table-column>
                 <!--删除按钮-->
@@ -218,15 +248,6 @@
                     </template>
                 </el-table-column>
             </el-table-column>
-            <!--<el-table-column
-                    fixed="right"
-                    label="操作"
-                    width="100">
-                <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button type="text" size="small">编辑</el-button>
-                </template>
-            </el-table-column>-->
         </el-table>
         <!--分页-->
         <el-pagination
@@ -251,28 +272,26 @@
                 let _this = this;
                 // 看看是否调用
                 console.log('成功进入添加方法');
-                // 开始提示 MessageBox
-                _this.$confirm('请输入添加的内容,带*号的为必填项', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning',
-                    center: true
-                }).then(() => {
-                    _this.$message({
-                        type: 'success',
-                        message: '添加成功!'
-                    });
-                }).catch(() => {
-                    _this.$message({
-                        type: 'info',
-                        message: '已取消添加'
-                    });
+            },
+            // 取消添加按钮的响应函数
+            calAdd() {
+                // 直接提示取消即可
+                this.$message({
+                    type: 'error',
+                    message: '已取消添加'
                 });
+                // 取消后关闭表单
+                this.dialogFormVisible = false;
             },
             // 刷新内容方法
             refContent() {
                 // 看看是否调用
-                console.log('成功进入刷新方法');
+                // console.log('成功进入刷新方法');
+                this.$message({
+                    type: 'success',
+                    message: '已刷新页面'
+                });
+                this.reload();
             },
             // 查看图片方法
             getImage() {
@@ -282,16 +301,23 @@
             // 修改内容方法
             // 实际上是通过 id 在数据库查找内容的方法
             findContent(row) {
-                // 重定义 this 防止之后无法使用
-                let _this = this;
                 // 看看是否调用
-                console.log('成功进入修改方法');
-                // 新建一个 Dialog 收取内容
+                // console.log('成功进入修改方法');
+                // 跳转到修改页面进行修改
+                console.log(row.id);
+                // this.$router.push('/edit?id='+row.id);
+                this.$router.push({
+                    path: '/edit',
+                    query: {
+                        id: row.id,
+                    }
+                })
             },
             // 查找内容方法
             seContent() {
                 // 看看是否调用
-                console.log('成功进入查询方法');
+                // console.log('成功进入查询方法');
+                let searchItem = searchData;
             },
             // 删除内容方法
             delContent(row) {
@@ -368,10 +394,9 @@
                         videos: '上海市普陀区金沙江路 1520 弄',
                         address: '上海市普陀区金沙江路 1521 弄'
                     }],
-                input: '',
-                searchData: [{
-                    // 查询输入内容
-                }],
+                searchData: '',
+                dialogFormVisible: false,
+                formLabelWidth: '120px',
                 visible: false,
             };
         }
