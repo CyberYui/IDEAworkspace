@@ -8,45 +8,14 @@
                 <el-button
                         style="width: 27%; margin-right: 12px;"
                         type="success"
-                        @click="dialogFormVisible = true">添加
+                        icon="el-icon-circle-plus"
+                        @click="addContent">添加
                 </el-button>
-                <!-- 弹出表单内容 -->
-                <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
-                    <el-form>
-                        <template slot-scope="scope">
-                            <el-form-item label="标题" :label-width="formLabelWidth">
-                                <el-input></el-input>
-                            </el-form-item>
-                            <el-form-item label="所属主题" :label-width="formLabelWidth">
-                                <el-input></el-input>
-                            </el-form-item>
-                            <!-- 测试时仅仅先使用下面这个条目 -->
-                            <el-form-item label="请在以下处输入内容,右侧会实时显示效果" :label-width="formLabelWidth">
-                                <el-input></el-input>
-                            </el-form-item>
-                            <!-- 条目结束 -->
-                            <el-form-item label="图片链接" :label-width="formLabelWidth">
-                                <el-input></el-input>
-                            </el-form-item>
-                            <el-form-item label="视频链接" :label-width="formLabelWidth">
-                                <el-input></el-input>
-                            </el-form-item>
-                            <el-button
-                                    type="success"
-                                    @click="addContent">确认添加
-                            </el-button>
-                            <el-button
-                                    type="info"
-                                    @click="calAdd">取消添加
-                            </el-button>
-                        </template>
-                    </el-form>
-                </el-dialog>
-                <!-- FormEnd -->
                 <!--刷新按钮-->
                 <el-button
                         style="width: 27%"
                         type="warning"
+                        icon="el-icon-refresh-right"
                         @click="refContent">
                     <!--@click="handleClick(scope.row)"-->
                     刷新
@@ -63,6 +32,7 @@
                 <el-button
                         style="width: 13%; margin-left: 12px;"
                         type="primary"
+                        icon="el-icon-search"
                         @click="seContent">搜索
                 </el-button>
             </el-row>
@@ -268,21 +238,23 @@
             },
             // 添加内容方法
             addContent() {
-                // 重定义 this 防止之后无法使用
-                let _this = this;
                 // 看看是否调用
-                console.log('成功进入添加方法');
+                // console.log('成功进入添加方法');
+                // 跳转到添加页面进行修改
+                this.$router.push({
+                    path: '/add'
+                })
             },
             // 取消添加按钮的响应函数
-            calAdd() {
-                // 直接提示取消即可
-                this.$message({
-                    type: 'error',
-                    message: '已取消添加'
-                });
-                // 取消后关闭表单
-                this.dialogFormVisible = false;
-            },
+            // calAdd() {
+            //     // 直接提示取消即可
+            //     this.$message({
+            //         type: 'error',
+            //         message: '已取消添加'
+            //     });
+            //     // 取消后关闭表单
+            //     this.dialogFormVisible = false;
+            // },
             // 刷新内容方法
             refContent() {
                 // 看看是否调用
@@ -317,7 +289,9 @@
             seContent() {
                 // 看看是否调用
                 // console.log('成功进入查询方法');
+                // 获取输入的值
                 let searchItem = searchData;
+                console.log(searchItem);
             },
             // 删除内容方法
             delContent(row) {
@@ -329,7 +303,8 @@
                 _this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    type: 'warning'
+                    center: true,
+                    type: 'error'
                 }).then(() => {
                     // 点击确认之后会删除本行内容
                     // 通过 axios 跨域删除数据库相关内容
@@ -395,8 +370,6 @@
                         address: '上海市普陀区金沙江路 1521 弄'
                     }],
                 searchData: '',
-                dialogFormVisible: false,
-                formLabelWidth: '120px',
                 visible: false,
             };
         }

@@ -8,7 +8,7 @@
             label-width="100px"
             style="width: 1000px">
         <!-- 使用 v-model 分别绑定数据 -->
-        <el-form-item label="序号" prop="id" style="display: none;">
+        <el-form-item label="序号" prop="id">
             <el-input v-model="article.id" readonly></el-input>
         </el-form-item>
         <el-form-item label="标题" prop="title">
@@ -32,14 +32,14 @@
             <el-button
                     round
                     type="success"
-                    @click="onSubmit('form')"
-            >确认修改
+                    @click="onAdd('form')"
+            >确认添加
             </el-button>
             <el-button
                     round
                     type="info"
-                    @click="cancelSubmit"
-            >取消修改
+                    @click="cancelAdd"
+            >取消添加
             </el-button>
         </div>
     </el-form>
@@ -51,7 +51,7 @@
     import '@toast-ui/editor/dist/toastui-editor.css';
 
     export default {
-        name: "Edit",
+        name: "Add",
         data() {
             return {
                 // 文章内容对象
@@ -84,12 +84,7 @@
             }
         },
         created() {
-            // console.log(this.$router.currentRoute.query.id)
-            let id = this.$router.currentRoute.query.id;
-            let _this = this;
-            axios.get('http://localhost:8181/qrcodedb/find/' + id).then(function (response) {
-                _this.article = response.data;
-            });
+
         },
         mounted() {
             // 当网页解析完毕后生成富文本编辑器
@@ -99,31 +94,14 @@
             });
         },
         methods: {
-            onSubmit(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        let _this = this;
-                        axios.put('http://localhost:8181/qrcodedb/update', this.article).then(function (response) {
-                            if (response.data) {
-                                _this.$alert('修改成功!', '修改数据', {
-                                    confirmButtonText: '确定',
-                                    callback: action => {
-                                        _this.$router.push('/test');
-                                    }
-                                })
-                            }
-                        })
-                    }
-                })
-            },
-            cancelSubmit() {
-                this.$alert('确定要取消修改吗?', '取消修改', {
+            cancelAdd() {
+                this.$alert('确定要取消添加吗?', '取消添加', {
                     confirmButtonText: '确定',
                     type: 'error',
                     callback: action => {
                         this.$message({
                             type: 'warning',
-                            message: '已取消修改'
+                            message: '已取消添加'
                         });
                         this.$router.push('/test');
                     }

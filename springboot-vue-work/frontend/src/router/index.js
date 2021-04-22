@@ -5,6 +5,9 @@ import Chart from '../views/Chart.vue'
 import Table from '../views/Table.vue'
 import Test from '../views/Test.vue'
 import Edit from '../views/Edit.vue'
+import Add from '../views/Add.vue'
+// 下面为测试 markdown 编辑器用的测试路径
+import Edittest from '../views/Edittest.vue'
 
 // 设定使用 vueRouter
 Vue.use(VueRouter);
@@ -44,7 +47,18 @@ const routes = [
     path:'/edit',
     name:'Edit',
     component: () => import('../views/Edit.vue')
-  }
+  },
+  {
+    path:'/add',
+    name:'Add',
+    component: () => import('../views/Add.vue')
+  },
+  // 下面为测试 markdown 编辑器用的测试路径
+  {
+    path:'/edittest',
+    name:'Edittest',
+    component: ()=> import( '../views/Edittest.vue')
+  },
 ];
 
 const router = new VueRouter({
