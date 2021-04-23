@@ -21,5 +21,4 @@ public interface QrcodedbMapper extends BaseMapper<Qrcodedb> {
      *  int updateById 方法用于通过 id 更新内容
      *  T selectById(Serializable id) 方法用于通过 id 查询内容
      * */
-
 }

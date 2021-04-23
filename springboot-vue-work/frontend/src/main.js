@@ -5,7 +5,6 @@ import store from './store';
 // 在本文件导入插件 js 代码
 import './plugins/axios';
 import './plugins/element.js';
-// import Vue2Editor from 'vue2-editor';
 
 import * as echarts from 'echarts';
 

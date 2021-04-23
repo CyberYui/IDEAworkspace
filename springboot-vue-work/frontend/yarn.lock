@@ -7823,6 +7823,11 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
 
+vue-ydui@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.npm.taobao.org/vue-ydui/download/vue-ydui-1.2.6.tgz#190648b46723917004a4c24a7befd3cd69d64355"
+  integrity sha1-GQZItGcjkXAEpMJKe+/TzWnWQ1U=
+
 vue2-editor@^2.10.2:
   version "2.10.2"
   resolved "https://registry.npm.taobao.org/vue2-editor/download/vue2-editor-2.10.2.tgz#57dd2275d66a407c8078330951a9b601840f033f"

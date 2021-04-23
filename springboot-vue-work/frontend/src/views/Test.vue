@@ -28,7 +28,7 @@
                         style="width: 27%; margin-left: 12px;"
                         clearable>
                 </el-input>
-                <!--搜索按钮-->
+                <!-- 搜索按钮 -->
                 <el-button
                         style="width: 13%; margin-left: 12px;"
                         type="primary"
@@ -99,21 +99,11 @@
                     align="center"
                     label="查看图片"
                     width="120px">
-                <!--图片弹出框-->
                 <el-popover
-                        placement="top-start"
-                        title="查看图片"
+                        placement="bottom"
+                        title="图片预览"
                         width="200"
                         trigger="click">
-                    <!--设定弹出框的 div 大小,并传输需要的图片路径-->
-                    <!--技术问题:这里的图片无法实时调取数据库内容然后显示-->
-                    <div style="height:200px;padding: 5px">
-                        <img
-                                style="height:190px;"
-                                :src='"http://file06.16sucai.com/2016/0806/fe48f9d41b21a269ba9446c11308a0ec.jpg"'
-                                alt
-                        />
-                    </div>
                     <el-button
                             slot="reference"
                             size="mini"
@@ -122,7 +112,6 @@
                             @click="getImage">查看图片
                     </el-button>
                 </el-popover>
-                <!--图片弹出框结束-->
             </el-table-column>
             <!--查看图片按钮结束-->
             <!--视频地址列-->
@@ -222,6 +211,7 @@
         <!--分页-->
         <el-pagination
                 small
+                align="center"
                 layout="prev, pager, next"
                 :total="500">
         </el-pagination>
@@ -245,16 +235,6 @@
                     path: '/add'
                 })
             },
-            // 取消添加按钮的响应函数
-            // calAdd() {
-            //     // 直接提示取消即可
-            //     this.$message({
-            //         type: 'error',
-            //         message: '已取消添加'
-            //     });
-            //     // 取消后关闭表单
-            //     this.dialogFormVisible = false;
-            // },
             // 刷新内容方法
             refContent() {
                 // 看看是否调用
@@ -266,7 +246,7 @@
                 this.reload();
             },
             // 查看图片方法
-            getImage() {
+            getImage(row) {
                 // 看看是否调用
                 console.log('成功进入查看图片方法');
             },
@@ -285,13 +265,32 @@
                     }
                 })
             },
-            // 查找内容方法
+            // 查找内容方法--这个方法现在有一点显示的问题
             seContent() {
                 // 看看是否调用
                 // console.log('成功进入查询方法');
                 // 获取输入的值
-                let searchItem = searchData;
-                console.log(searchItem);
+                let _this = this;
+                let title = this.searchData;
+                // console.log(title);
+                axios.get('http://localhost:8181/qrcodedb/search/' + title).then(function (response) {
+                    // 查看获取到的内容是否正确
+                    console.log(response.data);
+                    // 查看是否修改了 tableData
+                    console.log(_this.tableData);
+                    // 赋值给 table
+                    // 修改建议-->通过循环赋值给 table
+                    _this.tableData = [];
+                    _this.tableData.id = response.data.id;
+                    _this.tableData.title = response.data.title;
+                    _this.tableData.major = response.data.major;
+                    _this.tableData.content = response.data.content;
+                    _this.tableData.image = response.data.image;
+                    _this.tableData.videos = response.data.videos;
+                    _this.tableData.address = response.data.address;
+                    // 查看是否修改了 tableData
+                    console.log(_this.tableData);
+                });
             },
             // 删除内容方法
             delContent(row) {
@@ -345,15 +344,15 @@
             // 修改表格行的内容
         },
         // methods 结束
-
+        // 初始化函数
         // 使用 axios 链接后台数据库,刷新表格
         created() {
             let _this = this;
             axios.get('http://localhost:8181/qrcodedb/list').then(function (response) {
+                // console.log(response.data);
                 _this.tableData = response.data;
             });
         },
-
         // data 内容
         data() {
             return {
@@ -372,6 +371,10 @@
                 searchData: '',
                 visible: false,
             };
+        },
+        // mounted 内容
+        mounted() {
+
         }
     }
 </script>

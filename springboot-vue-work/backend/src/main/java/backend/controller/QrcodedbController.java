@@ -2,6 +2,7 @@ package backend.controller;
 
 import backend.entity.Qrcodedb;
 import backend.service.QrcodedbService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +45,14 @@ public class QrcodedbController {
     @PutMapping("/update")
     public boolean update(@RequestBody Qrcodedb qrcodedb){
         return this.qrcodedbService.updateById(qrcodedb);
+    }
+
+    // 尝试通过传过来的 title 标签进行模糊查询,返回查询到的一条数据
+    @GetMapping("/search/{title}")
+    public Qrcodedb findTitle(@PathVariable("title") String title){
+        QueryWrapper<Qrcodedb> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("title",title);
+        return qrcodedbService.getOne(queryWrapper);
     }
 }
 
