@@ -95,23 +95,21 @@
             <!--图片地址列结束-->
             <!--添加查看图片的按钮-->
             <!--这里的主要技术问题并没有解决-->
+            <!--https://blog.csdn.net/qq_41154522/article/details/104597734-->
             <el-table-column
                     align="center"
-                    label="查看图片"
+                    label="移动到图片上预览"
                     width="120px">
-                <el-popover
-                        placement="bottom"
-                        title="图片预览"
-                        width="200"
-                        trigger="click">
-                    <el-button
-                            slot="reference"
-                            size="mini"
-                            style="width: 95px"
-                            type="success"
-                            @click="getImage">查看图片
-                    </el-button>
-                </el-popover>
+                <template slot-scope="scope">
+                    <el-popover
+                            placement="right"
+                            title="图片预览"
+                            width="200px"
+                            trigger="hover">
+                        <img :src="scope.row.image"/>
+                        <img slot="reference" :src="scope.row.image"  style="width: 200px;">
+                    </el-popover>
+                </template>
             </el-table-column>
             <!--查看图片按钮结束-->
             <!--视频地址列-->
@@ -244,11 +242,6 @@
                     message: '已刷新页面'
                 });
                 this.reload();
-            },
-            // 查看图片方法
-            getImage(row) {
-                // 看看是否调用
-                console.log('成功进入查看图片方法');
             },
             // 修改内容方法
             // 实际上是通过 id 在数据库查找内容的方法
