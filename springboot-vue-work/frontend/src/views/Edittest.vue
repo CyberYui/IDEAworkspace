@@ -1,5 +1,5 @@
 <template>
-    <!-- 本页面为编辑页面的测试页面 -->
+    <!-- model='article' 表示整个表单和下面的 article 对象绑定-->
     <el-form
             label-position="right"
             ref="form"
@@ -17,11 +17,9 @@
         <el-form-item label="所属主题" prop="major">
             <el-input v-model="article.major"></el-input>
         </el-form-item>
-        <!-- 测试时仅仅先使用下面这个条目 -->
         <el-form-item label="文本内容" prop="content">
-            <div id="editor" style="height: 500px"></div>
+            <div id="editor"></div>
         </el-form-item>
-        <!-- 条目结束 -->
         <el-form-item label="单图链接" prop="image">
             <el-input v-model="article.image"></el-input>
         </el-form-item>
@@ -63,20 +61,83 @@
                     image: '',
                     videos: '',
                     address: ''
-                }
+                },
+                // 给 content 设定一个初始值
+                content: "这里是文本编辑器的初始内容",
+                rules: {
+                    title: [
+                        {required: true, message: '请输入标题', trigger: 'blur'}
+                    ],
+                    major: [
+                        {required: true, message: '请输入主题', trigger: 'blur'}
+                    ],
+                    image: [
+                        {required: false, message: '请编辑单图链接', trigger: 'blur'}
+                    ],
+                    videos: [
+                        {required: true, message: '请添加视频链接', trigger: 'blur'}
+                    ]
+                },
             }
         },
         created() {
             // console.log(this.$router.currentRoute.query.id)
+            // let id = this.$router.currentRoute.query.id;
             let _this = this;
             axios.get('http://localhost:8181/qrcodedb/find/1').then(function (response) {
                 _this.article = response.data;
             });
         },
         mounted() {
+            let _this = this;
+            // 当网页解析完毕后生成富文本编辑器
             const editor = new Editor({
-                el: document.querySelector('#editor')
+                el: document.querySelector('#editor'),
+                previewStyle: 'vertical',
+                height: "500px",
+                initialValue:this.article.content,
+                viewer: true,
+                events:{
+                    change: function () {
+                        // 配置响应事件,让输入的内容动态存储给 article 的 content
+                        _this.article.content = editor.getMarkdown();
+                    }
+                }
             });
+        },
+        methods: {
+            onSubmit(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let _this = this;
+                        axios.put('http://localhost:8181/qrcodedb/update', this.article).then(function (response) {
+                            if (response.data) {
+                                _this.$alert('修改成功!', '修改数据', {
+                                    confirmButtonText: '确定',
+                                    callback: action => {
+                                        _this.$router.push('/table');
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            },
+            cancelSubmit() {
+                this.$alert('确定要取消修改吗?', '取消修改', {
+                    confirmButtonText: '确定',
+                    type: 'error',
+                    callback: action => {
+                        this.$message({
+                            type: 'warning',
+                            message: '已取消修改'
+                        });
+                        // 为了测试,先转到 table 页面
+                        this.$router.push('/table');
+                        // this.$router.push('/test');
+                    }
+                });
+            }
         }
     }
 </script>

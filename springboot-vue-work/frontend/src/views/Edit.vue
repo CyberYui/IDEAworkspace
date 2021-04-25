@@ -17,11 +17,9 @@
         <el-form-item label="所属主题" prop="major">
             <el-input v-model="article.major"></el-input>
         </el-form-item>
-        <!-- 测试时仅仅先使用下面这个条目 -->
         <el-form-item label="文本内容" prop="content">
-            <div id="editor" style="height: 500px"></div>
+            <div id="editor"></div>
         </el-form-item>
-        <!-- 条目结束 -->
         <el-form-item label="单图链接" prop="image">
             <el-input v-model="article.image"></el-input>
         </el-form-item>
@@ -64,15 +62,14 @@
                     videos: '',
                     address: ''
                 },
+                // 给 content 设定一个初始值
+                content: "这里是文本编辑器的初始内容",
                 rules: {
                     title: [
                         {required: true, message: '请输入标题', trigger: 'blur'}
                     ],
                     major: [
                         {required: true, message: '请输入主题', trigger: 'blur'}
-                    ],
-                    content: [
-                        {required: true, message: '请编辑内容', trigger: 'blur'}
                     ],
                     image: [
                         {required: false, message: '请编辑单图链接', trigger: 'blur'}
@@ -92,10 +89,20 @@
             });
         },
         mounted() {
+            let _this = this;
             // 当网页解析完毕后生成富文本编辑器
             const editor = new Editor({
                 el: document.querySelector('#editor'),
-                previewStyle: 'vertical'
+                previewStyle: 'vertical',
+                height: "500px",
+                initialValue:this.article.content,
+                viewer: true,
+                events:{
+                    change: function () {
+                        // 配置响应事件,让输入的内容动态存储给 article 的 content
+                        _this.article.content = editor.getMarkdown();
+                    }
+                }
             });
         },
         methods: {
@@ -108,7 +115,7 @@
                                 _this.$alert('修改成功!', '修改数据', {
                                     confirmButtonText: '确定',
                                     callback: action => {
-                                        _this.$router.push('/test');
+                                        _this.$router.push('/table');
                                     }
                                 })
                             }
@@ -126,8 +133,8 @@
                             message: '已取消修改'
                         });
                         // 为了测试,先转到 table 页面
-                        // this.$router.push('/table');
-                        this.$router.push('/test');
+                        this.$router.push('/table');
+                        // this.$router.push('/test');
                     }
                 });
             }

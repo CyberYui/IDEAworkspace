@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author CyberKaka
- * @since 2021-04-19
+ * @since 2021-04-25
  */
 @Service
 public class QrcodedbServiceImpl extends ServiceImpl<QrcodedbMapper, Qrcodedb> implements QrcodedbService {

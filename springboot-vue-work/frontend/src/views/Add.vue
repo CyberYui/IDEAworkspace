@@ -8,20 +8,15 @@
             label-width="100px"
             style="width: 1000px">
         <!-- 使用 v-model 分别绑定数据 -->
-        <el-form-item label="序号" prop="id">
-            <el-input v-model="article.id" readonly></el-input>
-        </el-form-item>
         <el-form-item label="标题" prop="title">
             <el-input v-model="article.title"></el-input>
         </el-form-item>
         <el-form-item label="所属主题" prop="major">
             <el-input v-model="article.major"></el-input>
         </el-form-item>
-        <!-- 测试时仅仅先使用下面这个条目 -->
         <el-form-item label="文本内容" prop="content">
-            <div id="editor" style="height: 500px"></div>
+            <div id="editor"></div>
         </el-form-item>
-        <!-- 条目结束 -->
         <el-form-item label="单图链接" prop="image">
             <el-input v-model="article.image"></el-input>
         </el-form-item>
@@ -56,7 +51,6 @@
             return {
                 // 文章内容对象
                 article: {
-                    id: '',
                     title: '',
                     major: '',
                     content: '',
@@ -71,9 +65,6 @@
                     major: [
                         {required: true, message: '请输入主题', trigger: 'blur'}
                     ],
-                    content: [
-                        {required: true, message: '请编辑内容', trigger: 'blur'}
-                    ],
                     image: [
                         {required: false, message: '请编辑单图链接', trigger: 'blur'}
                     ],
@@ -83,17 +74,41 @@
                 },
             }
         },
-        created() {
-
-        },
         mounted() {
+            let _this = this;
             // 当网页解析完毕后生成富文本编辑器
             const editor = new Editor({
                 el: document.querySelector('#editor'),
-                previewStyle: 'vertical'
+                previewStyle: 'vertical',
+                height: "500px",
+                initialValue:this.content,
+                viewer: true,
+                events:{
+                    change: function () {
+                        // 配置响应事件,让输入的内容动态存储给 article 的 content
+                        _this.article.content = editor.getMarkdown();
+                    }
+                }
             });
         },
         methods: {
+            onAdd(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let _this = this;
+                        axios.post('http://localhost:8181/qrcodedb/add', this.article).then(function (response) {
+                            if (response.data) {
+                                _this.$alert('添加成功!', '添加数据', {
+                                    confirmButtonText: '确定',
+                                    callback: action => {
+                                        _this.$router.push('/table');
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            },
             cancelAdd() {
                 this.$alert('确定要取消添加吗?', '取消添加', {
                     confirmButtonText: '确定',
@@ -103,7 +118,7 @@
                             type: 'warning',
                             message: '已取消添加'
                         });
-                        this.$router.push('/test');
+                        this.$router.push('/table');
                     }
                 });
             }
