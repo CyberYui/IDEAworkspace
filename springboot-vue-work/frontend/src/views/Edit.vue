@@ -125,6 +125,8 @@
                             type: 'warning',
                             message: '已取消修改'
                         });
+                        // 为了测试,先转到 table 页面
+                        // this.$router.push('/table');
                         this.$router.push('/test');
                     }
                 });

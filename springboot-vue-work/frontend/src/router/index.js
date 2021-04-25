@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Chart from '../views/Chart.vue'
 import Table from '../views/Table.vue'
-import Test from '../views/Test.vue'
 import Edit from '../views/Edit.vue'
 import Add from '../views/Add.vue'
 // 下面为测试 markdown 编辑器用的测试路径
@@ -37,11 +36,6 @@ const routes = [
     path: '/table',
     name: 'Table',
     component: () => import('../views/Table.vue')
-  },
-  {
-    path:'/test',
-    name:'Test',
-    component: () => import('../views/Test.vue')
   },
   {
     path:'/edit',
