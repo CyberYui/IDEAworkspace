@@ -48,6 +48,8 @@
     import 'codemirror/lib/codemirror.css';
     import '@toast-ui/editor/dist/toastui-editor.css';
 
+    var contentAll = 'global offensive';
+
     export default {
         name: "Edittest",
         data() {
@@ -89,13 +91,21 @@
             });
         },
         mounted() {
+            // 重新获取一次,并给全局变量配置内容
+            axios.get('http://localhost:8181/qrcodedb/find/1').then(function (response) {
+                _this.article = response.data;
+                contentAll = response.data.content;
+                console.log('mounted: '+contentAll);
+            });
+            // 开始渲染 markdown 编辑器
             let _this = this;
             // 当网页解析完毕后生成富文本编辑器
             const editor = new Editor({
                 el: document.querySelector('#editor'),
                 previewStyle: 'vertical',
                 height: "500px",
-                initialValue:this.article.content,
+                // 直接在初始化时使用内容
+                initialValue:contentAll,
                 viewer: true,
                 events:{
                     change: function () {
