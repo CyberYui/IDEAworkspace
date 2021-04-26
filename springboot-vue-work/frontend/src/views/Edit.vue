@@ -48,6 +48,8 @@
     import 'codemirror/lib/codemirror.css';
     import '@toast-ui/editor/dist/toastui-editor.css';
 
+    var contentAll = '移动到此处单击后进行内容修改,右侧为浏览框';
+
     export default {
         name: "Edit",
         data() {
@@ -89,15 +91,25 @@
             });
         },
         mounted() {
+            // 重新获取一次,并给全局变量配置内容
+            axios.get('http://localhost:8181/qrcodedb/find/1').then(function (response) {
+                _this.article = response.data;
+                contentAll = response.data.content;
+                console.log('mounted: ' + contentAll);
+            });
+            // 开始渲染 markdown 编辑器
             let _this = this;
             // 当网页解析完毕后生成富文本编辑器
             const editor = new Editor({
                 el: document.querySelector('#editor'),
                 previewStyle: 'vertical',
                 height: "500px",
-                initialValue:this.article.content,
+                initialValue:contentAll,
                 viewer: true,
                 events:{
+                    focus: function () {
+                        editor.setMarkdown(contentAll);
+                    },
                     change: function () {
                         // 配置响应事件,让输入的内容动态存储给 article 的 content
                         _this.article.content = editor.getMarkdown();

@@ -1,12 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Chart from '../views/Chart.vue'
-import Table from '../views/Table.vue'
-import Edit from '../views/Edit.vue'
-import Add from '../views/Add.vue'
-// 下面为测试 markdown 编辑器用的测试路径
-import Edittest from '../views/Edittest.vue'
 
 // 设定使用 vueRouter
 Vue.use(VueRouter);
@@ -52,6 +46,11 @@ const routes = [
     path:'/edittest',
     name:'Edittest',
     component: ()=> import( '../views/Edittest.vue')
+  },
+  {
+    path:'/videotest',
+    name:'Videotest',
+    component: ()=>import('../views/Videotest.vue')
   },
 ];
 

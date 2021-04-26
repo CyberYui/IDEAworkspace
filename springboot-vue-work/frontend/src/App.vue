@@ -4,7 +4,14 @@
         <!--比如在其外面加一层内容,或者直接添加背景什么的-->
         <!--也就是说 App.vue 会在每个 views 的外面都有内容显示-->
         <!--比如这里添加了一个导航栏-->
-        <el-menu id="app" :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+        <!--为了让导航栏不在一些特定页面展示,给其添加了 v-if 属性-->
+        <el-menu
+            v-if="headerShow"
+            id="app"
+            :default-active="activeIndex"
+            class="el-menu-demo"
+            mode="horizontal"
+            @select="handleSelect">
             <el-menu-item index="1">处理中心</el-menu-item>
             <el-submenu index="2">
                 <template slot="title">我的工作台</template>
@@ -26,34 +33,46 @@
 </template>
 
 <script>
-    // import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
 
-    export default {
-        // name: 'app',
-        // components: {
-        //     HelloWorld
-        // }
-        data() {
-            return {
-                activeIndex: '1',
-                activeIndex2: '1'
-            };
-        },
-        methods: {
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
+export default {
+    name: 'app',
+    // components: {
+    //     HelloWorld
+    // }
+    data() {
+        return {
+            activeIndex: '1',
+            activeIndex2: '1',
+            headerShow: true
+        };
+    },
+    methods: {
+        handleSelect(key, keyPath) {
+            console.log(key, keyPath);
+        }
+    },
+    watch: {
+        $route(to, from) {
+            // 设置当进入的是视频测试页面 videotest
+            // 以及二维码显示页面 qrcodetest 时不显示导航栏
+            if (this.$route.path === "/videotest" || "/qrcodetest") {
+                this.headerShow = false;
+            } else {
+                this.headerShow = true;
             }
         }
     }
+}
 </script>
 
 <style>
-    #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
-        margin-bottom: 12px;
-    }
+#app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 12px;
+}
 </style>
