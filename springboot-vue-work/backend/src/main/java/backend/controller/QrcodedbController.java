@@ -54,11 +54,18 @@ public class QrcodedbController {
 
     @PostMapping("/upload")
     public boolean upload(@RequestParam("file")MultipartFile file){
+        // 由于前端发送的是 FormData 类型内容,所以这里用
+        // RequestParam 注解获取内容
         if (!file.isEmpty()){
+            // 传输的内容名-->即 file
             System.out.println(file.getName());
+            // 文件大小
             System.out.println(file.getSize());
+            // 文件名
             System.out.println(file.getOriginalFilename());
+            // 提示文件获取成功
             System.out.println("Receive file well !");
+            // 开始对获取到的文件进行操作
             return true;
         }
         System.out.println("Can't receive the file.");
