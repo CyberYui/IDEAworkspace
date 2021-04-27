@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -54,6 +52,19 @@ public class QrcodedbController {
         return this.qrcodedbService.save(qrcodedb);
     }
 
+    @PostMapping("/upload")
+    public boolean upload(@RequestParam("file")MultipartFile file){
+        if (!file.isEmpty()){
+            System.out.println(file.getName());
+            System.out.println(file.getSize());
+            System.out.println(file.getOriginalFilename());
+            System.out.println("Receive file well !");
+            return true;
+        }
+        System.out.println("Can't receive the file.");
+        return false;
+    }
+
     // 尝试通过传过来的 title 标签进行模糊查询,返回查询到的一条数据
     // 这个函数已经被废弃了,查询的效果直接从前端页面进行实现
     //@GetMapping("/search/{title}")
@@ -64,14 +75,14 @@ public class QrcodedbController {
     //}
 
     // 下面这个函数可行性并没有得到验证,仅仅放在这里看一看
-    @RequestMapping(value = "/upload",method = RequestMethod.POST)
-    public Map<String,Object> multiImport(@RequestParam("uploadFile")MultipartFile[] uploadFile){
-        Map<String,Object> result = new HashMap<String,Object>(16);
-        System.out.println(uploadFile.length);
-        for (MultipartFile multipartFile:uploadFile){
-            System.out.println("文件 : "+multipartFile.getOriginalFilename());
-        }
-        return result;
-    }
+    //@RequestMapping(value = "/upload",method = RequestMethod.POST)
+    //public Map<String,Object> multiImport(@RequestParam("File")MultipartFile[] uploadFile){
+    //    Map<String,Object> result = new HashMap<String,Object>(16);
+    //    System.out.println(uploadFile.length);
+    //    for (MultipartFile multipartFile:uploadFile){
+    //        System.out.println("文件 : "+multipartFile.getOriginalFilename());
+    //    }
+    //    return result;
+    //}
 }
 

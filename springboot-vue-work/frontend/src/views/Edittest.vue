@@ -99,7 +99,7 @@ export default {
         // console.log(this.$router.currentRoute.query.id)
         // let id = this.$router.currentRoute.query.id;
         let _this = this;
-        axios.get('http://localhost:8181/qrcodedb/find/1').then(function (response) {
+        axios.get('http://localhost:8181/qrcodedb/find/5').then(function (response) {
             _this.article = response.data;
         });
     },
@@ -191,7 +191,7 @@ export default {
         uploadFile(imageGet) {
             let _this = this;
             // 首先获取到 input 内容框返回的数据
-            let target = imageGet.target;
+            const target = imageGet.target;
             // console.log('获取到的dom内容为'+target.files);
 
             // 循环输出文件列表,我就不信你一直都是 object FileList
@@ -201,31 +201,22 @@ export default {
             // }
 
             // 一般只允许上传一张图片
-            // 提取出其中的文件名
-            // let fileName = target.files[0].name;
-            // console.log('获取到的文件名为'+fileName);
-
             // 提取出上传的内容(只有一条)
             let file = target.files[0];
-            // console.log('获取到的文件为'+file);
-
             // 创建一个空的 FormData 对象,用来存储文件相关信息
-            const formData = new FormData();
-            // 通过 append 方法向对象里加入键值对
+            let formData = new FormData();
             // API : formData.append(键名: name, 键值: value, 文件名: filename);
-
             // 通过 append 向 FormData 对象添加数据
-            // 存储文件名
+            // 存储文件,主要操作的就是文件了
+            formData.append("file", file);
+            // 提取出其中的文件名,添加给 formData 存储文件名
             formData.append("fileName", file.name);
             // 存储文件类型
             formData.append("type", file.type);
-            // 存储文件
-            formData.append("file", file);
             // -------配置 formData 对象完成---------
-            // console.log(formData.getAll("file"));
-            console.log(formData.getAll('上传的文件类型为 : ' + "type"));
-            // 判断上传的文件是否满足要求
-            // 创建一个类型数组
+            // 输出一下文件名
+            console.log('name is : ' + formData.getAll("fileName"));
+            // 创建一个类型数组,用来判断上传的文件是否满足要求
             const fileTypes = ['image/jpeg', 'image/png', 'image/pjpeg'];
 
             // 定义判断类型函数,它的参数为一个 FormData
@@ -254,34 +245,35 @@ export default {
             // }
 
             // 判断文件的合法性(上传文件到本地路径)
-            // 载入 formidable
-
             if (validFileType(formData)) {
-                // 图片正确,开始上传到本地
-                // 添加请求头
+                // 图片正确,开始上传到本地,添加请求内容类型
                 let config = {
                     headers: {
                         // 设定上传内容类型
-                        'Content-type': 'multipart/form-data'
+                        'Content-type': 'multipart/form-data',
                     }
                 }
-
                 // 上传内容
                 _this.$axios({
-                    method: "post",
                     url: "http://localhost:8181/qrcodedb/upload",
+                    method: "post",
                     // data 表示上传的对象,这里就是上传之前创建的 FormData 对象
                     data: formData,
                     config: config,
-                }).then(function (response) {
-                    console.log('response.data : ' + response.data);
-                    console.log('response.data.key : ' + response.data.key);
+                    // 不需要缓存
+                    // cache: false,
+                    // 不需要进行数据转换
+                    processData: false,
+                }).then(function (data) {
+                    // data 是后端 return 的对象
+                    console.log('response.data : ' + data.data);
+                    console.log('response.data.key : ' + data.data.key);
                     //上传成功开始拼接地址
                     // let imgUrl = "" + response.data.key;
                     // 添加这个地址到 markdown 编辑器
                     // _this.addImgToMd(imgUrl);
                 }).catch(error => {
-                    console.error(error.response);
+                    console.error(error);
                 })
             } else {
                 alert(formData.get('name') + '的格式为 : ' + formData.get('type') + ',这不是一个合法的图片格式');
