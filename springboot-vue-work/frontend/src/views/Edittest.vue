@@ -251,7 +251,8 @@ export default {
                     headers: {
                         // 设定上传内容类型
                         'Content-type': 'multipart/form-data',
-                    }
+                    },
+                    timeout: 60000,
                 }
                 // 上传内容
                 _this.$axios({
