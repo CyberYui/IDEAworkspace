@@ -4,8 +4,11 @@ import backend.entity.Qrcodedb;
 import backend.service.QrcodedbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -59,5 +62,16 @@ public class QrcodedbController {
     //    queryWrapper.like("title",title);
     //    return qrcodedbService.getOne(queryWrapper);
     //}
+
+    // 下面这个函数可行性并没有得到验证,仅仅放在这里看一看
+    @RequestMapping(value = "/upload",method = RequestMethod.POST)
+    public Map<String,Object> multiImport(@RequestParam("uploadFile")MultipartFile[] uploadFile){
+        Map<String,Object> result = new HashMap<String,Object>(16);
+        System.out.println(uploadFile.length);
+        for (MultipartFile multipartFile:uploadFile){
+            System.out.println("文件 : "+multipartFile.getOriginalFilename());
+        }
+        return result;
+    }
 }
 

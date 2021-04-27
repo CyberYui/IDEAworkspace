@@ -25,13 +25,13 @@
              ref=files 标志着可以通过 $ref.files 获取到上传的文件名
              accept=image/* 表示接受所有格式的图像文件
              假如只支持某些格式的图片,可以这样写
-             accept=image/gif|image/jpeg|image/png -->
+             accept=image/png, image/jpeg -->
             <input
                 type="file"
                 ref="files"
-                style="display: none"
+                style="opacity:0"
                 @change="uploadFile"
-                accept="image/gif|image/jpeg|image/png">
+                accept="image/png, image/jpeg">
         </el-form-item>
         <el-form-item label="单图链接" prop="image">
             <el-input v-model="article.image"></el-input>
@@ -113,7 +113,7 @@ export default {
             axios.get('http://localhost:8181/qrcodedb/find/5').then(function (response) {
                 _this.article = response.data;
                 contentAll = response.data.content;
-                console.log('mounted: ' + contentAll);
+                // console.log('mounted: ' + contentAll);
             });
             // 开始渲染 markdown 编辑器
             let _this = this;
@@ -182,7 +182,7 @@ export default {
                 options: {
                     className: 'tui-image',
                     event: 'uploadImageButton',
-                    tooltip: 'upload image',
+                    tooltip: 'upload image,only png & jpg available',
                     style: 'color:black;'
                 }
             });
@@ -205,7 +205,7 @@ export default {
             // let fileName = target.files[0].name;
             // console.log('获取到的文件名为'+fileName);
 
-            // 提取出数组的一整条内容
+            // 提取出上传的内容(只有一条)
             let file = target.files[0];
             // console.log('获取到的文件为'+file);
 
@@ -213,24 +213,80 @@ export default {
             const formData = new FormData();
             // 通过 append 方法向对象里加入键值对
             // API : formData.append(键名: name, 键值: value, 文件名: filename);
-            formData.append("file", file.name);
+
+            // 通过 append 向 FormData 对象添加数据
+            // 存储文件名
+            formData.append("fileName", file.name);
+            // 存储文件类型
             formData.append("type", file.type);
+            // 存储文件
+            formData.append("file", file);
+            // -------配置 formData 对象完成---------
             // console.log(formData.getAll("file"));
-            console.log(formData.getAll("type"));
-            // 判断上传的图片格式是否正确
-            // --------------------doing here--------------------------
-            // 图片上传正确,开始上传到服务器
-            _this.$axios({
-                method:"post",
-                url:"",
-                data:formData
-            }).then(res=>{
-                //上传成功开始拼接地址
-                let imgUrl = "" + res.data.key;
-                _this.addImgToMd(imgUrl);
-            }).catch(error=>{
-                console.error(error.response);
-            })
+            console.log(formData.getAll('上传的文件类型为 : ' + "type"));
+            // 判断上传的文件是否满足要求
+            // 创建一个类型数组
+            const fileTypes = ['image/jpeg', 'image/png', 'image/pjpeg'];
+
+            // 定义判断类型函数,它的参数为一个 FormData
+            function validFileType(formData) {
+                return fileTypes.includes(formData.get('type'));
+            }
+
+            // 判断文件的合法性(上传文件到服务器)
+            // if(validFileType(formData)){
+            //     // 图片正确,开始上传到服务器
+            //     _this.$axios({
+            //         method:"get",
+            //         url:"",
+            //         data:formData
+            //     }).then(res=>{
+            //         console.log('res.data.key : '+res.data.key);
+            //         //上传成功开始拼接地址
+            //         let imgUrl = "" + res.data.key;
+            //         // 添加这个地址到 markdown 编辑器
+            //         _this.addImgToMd(imgUrl);
+            //     }).catch(error=>{
+            //         // console.error(error.response);
+            //     })
+            // }else{
+            //     alert(formData.get('name') + '的格式为 : ' +formData.get('type') + ',这不是一个合法的图片格式');
+            // }
+
+            // 判断文件的合法性(上传文件到本地路径)
+            // 载入 formidable
+
+            if (validFileType(formData)) {
+                // 图片正确,开始上传到本地
+                // 添加请求头
+                let config = {
+                    headers: {
+                        // 设定上传内容类型
+                        'Content-type': 'multipart/form-data'
+                    }
+                }
+
+                // 上传内容
+                _this.$axios({
+                    method: "post",
+                    url: "http://localhost:8181/qrcodedb/upload",
+                    // data 表示上传的对象,这里就是上传之前创建的 FormData 对象
+                    data: formData,
+                    config: config,
+                }).then(function (response) {
+                    console.log('response.data : ' + response.data);
+                    console.log('response.data.key : ' + response.data.key);
+                    //上传成功开始拼接地址
+                    // let imgUrl = "" + response.data.key;
+                    // 添加这个地址到 markdown 编辑器
+                    // _this.addImgToMd(imgUrl);
+                }).catch(error => {
+                    console.error(error.response);
+                })
+            } else {
+                alert(formData.get('name') + '的格式为 : ' + formData.get('type') + ',这不是一个合法的图片格式');
+            }
+
 
             // 原始代码
             // formData.append("token", this.qnToken);
@@ -247,6 +303,8 @@ export default {
             //     console.error(error.response);
             // });
         },
+        // ---------uploadFile 上传图片函数结束---------end---------
+
         //添加图片到markdown
         addImgToMd(data) {
             // 传入的就是图片的地址 url
