@@ -66,6 +66,10 @@ public class QrcodedbController {
             // 提示文件获取成功
             System.out.println("Receive file well !");
             // 开始对获取到的文件进行操作
+            // 基本思路 : 将获取到的文件先存储给一个对象,之后对这个对象进行操作
+            // 1. 给对象重命名,通过获取时间等内容命名新名称
+            // 2. 将对象复制到最终要保存图片的路径中,然后以新名称命名文件
+            // 3. 返回最终的图片路径
             return true;
         }
         System.out.println("Can't receive the file.");
