@@ -107,6 +107,8 @@ export default {
         this.initEditor();
     },
     methods: {
+      // 本文件仅仅用于测试,最终项目会修改成没有注释内容的项目,现在就尽量多注释了
+
         // 编辑器初始化函数
         initEditor() {
             // 重新获取一次,并给全局变量配置内容
