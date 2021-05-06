@@ -71,6 +71,7 @@ public class QrcodedbController {
             // 2. 将对象复制到最终要保存图片的路径中,然后以新名称命名文件
             // 3. 返回最终的图片路径
             // 最终要控制的就是 java 的 file 类使用,这个还得再看
+            // 本项目只是个单表的小项目,要想使用企业类项目还得再找
             return true;
         }
         System.out.println("Can't receive the file.");
