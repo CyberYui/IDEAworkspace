@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * <p>
@@ -54,13 +57,14 @@ public class QrcodedbController {
         return this.qrcodedbService.save(qrcodedb);
     }
 
+
     @PostMapping("/upload")
-    public boolean upload(@RequestParam("file")MultipartFile file) throws IOException {
+    public String upload(@RequestParam("file") MultipartFile file) throws IOException {
         // 由于前端发送的是 FormData 类型内容,所以这里用
         // RequestParam 注解获取内容
-        if (!file.isEmpty()){
+        if (!file.isEmpty()) {
             // 文件大小
-            System.out.println(file.getSize());
+            // System.out.println(file.getSize());
             // 提示文件获取成功
             System.out.println("Receive file well !");
             // 开始对获取到的文件进行操作
@@ -68,50 +72,114 @@ public class QrcodedbController {
             // 首先创建一个 file 对象,用来当最终操作的对象
             File f = null;
             // 输出文件的新 name,即上传传输过来的文件名
-            System.out.println("getName : "+file.getName());
+            System.out.println("getName : " + file.getName());
             // 输出源文件的名称,即上传之前文件叫啥
-            System.out.println("originalName : "+file.getOriginalFilename());
+            System.out.println("originalName : " + file.getOriginalFilename());
+            // 切分获取到的文件源名,拆解出格式
+            String srcFileName = file.getOriginalFilename().toString();
+            String[] srcFileNameArr = srcFileName.split("\\.");
+            System.out.println(srcFileNameArr[0]);
+            System.out.println(srcFileNameArr[1]);
+            // 循环输出获取到的文件名称和格式名
+            // 数组的第二项为格式
+            String fileFormat = srcFileNameArr[1];
+
+            // 定义输出路径,拼凑出适应当前系统的路径
+            String imgUploadPath = "F:\\IDEAworkspace\\springboot-vue-work\\backend" +
+                    "\\uploadFiles" +
+                    "\\uploadImgs\\";
+
             // 开始创建文件,确保文件名不是空的
+            // 需要在这里修改这一句代码,实现将文件复制到可选的路径
             f = new File(Objects.requireNonNull(file.getOriginalFilename()));
+            // 创建用于计算的循环数
             int n;
-            try(InputStream in = file.getInputStream(); OutputStream os=new FileOutputStream(f)){
+            try (
+                    InputStream in = file.getInputStream();
+                    OutputStream os = new FileOutputStream(f)) {
                 // 得到文件流.以文件流的方式输出到新文件
-                // 可以使用byte[] ss = file.getBytes();代替while循环
+                // 给一个缓存空间值,给予文件用于传输
                 byte[] buffer = new byte[4096];
-                while ((n = in.read(buffer,0,4096)) != -1){
-                    os.write(buffer,0,n);
+                while ((n = in.read(buffer, 0, 4096)) != -1) {
+                    os.write(buffer, 0, n);
                 }
                 // 读取文件第一行
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(f));
-                System.out.println(bufferedReader.readLine());
-                //输出路径
+                // 输出一下,这里可能是乱码,乱码就代表读取到内容了
+                // System.out.println(bufferedReader.readLine());
+                // 关闭该流并释放与之关联的所有资源
                 bufferedReader.close();
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+            //输出路径
+
+            // 文件的正确性确定了,将这个文件保存到相应的路径中,这个文件不会被删除
+
+            // 创建随机日期
+            Date localDate = new Date();
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-mm-yyyy-hh-mm-ss");
+            String createFdate =dateFormatter.format(localDate);
+
+            // 创建随机数
+            Random ran1 = new Random();
+            // 生成 0~10000 中的随机数
+            int numRan = ran1.nextInt(10000);
+            String numRanS = String.valueOf(numRan);
+
+            File f1 = new File(imgUploadPath+createFdate+numRanS+"."+fileFormat);
+            // 写入文件
+            // 创建用于计算的循环数
+            int i;
+            try (
+                    InputStream in1 = file.getInputStream();
+                    OutputStream os1 = new FileOutputStream(f1)) {
+                // 得到文件流.以文件流的方式输出到新文件
+                // 给一个缓存空间值,给予文件用于传输
+                byte[] buffer = new byte[4096];
+                while ((i = in1.read(buffer, 0, 4096)) != -1) {
+                    os1.write(buffer, 0, i);
+                }
+                // 读取文件第一行
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(f1));
+                // 输出一下,这里可能是乱码,乱码就代表读取到内容了
+                // System.out.println(bufferedReader.readLine());
+                // 关闭该流并释放与之关联的所有资源
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             // 输出 file 的URL
             System.out.println(f.toURI().toURL().toString());
             // 输出文件的绝对路径,这里放断点的话就能看到在项目根目录下的文件了
             System.out.println(f.getAbsolutePath());
             // 操作完文件之后 删除在根目录下生成的文件
             File file1 = new File(f.toURI());
-            if (file1.delete()){
+            if (file1.delete()) {
                 System.out.println("Delete complete!");
-            }else{
+            } else {
                 System.out.println("Delete failed");
             }
             // 基本思路 : 将获取到的文件先存储给一个对象,之后对这个对象进行操作
             // 1. 给对象重命名,通过获取时间等内容命名新名称
             // 2. 将对象复制到最终要保存图片的路径中,然后以新名称命名文件
             // 3. 返回最终的图片路径
-            // 最终要控制的就是 java 的 file 类使用,这个还得再看
+            // 最终要控制的就是相关的 file 各种类使用,这个还得再看
             // 本项目只是个单表的小项目,要想使用企业类项目还得再找
+            // 对于视频的思路:
+            // 1. 限定视频的上传大小
+            // 2. 通过断点续传来控制视频的上传(选做)
+            // 断点续传的网址:https://www.bilibili.com/video/BV16i4y1A7EN?p=4&spm_id_from=pageDriver
+            // 理应也有个视频的上传路径
+            // String vidUploadPath = "\\resources\\videoDir";
 
             // 设置将文件放在固定路径,并重新命名
-            return true;
+            System.out.println(f1.toURI().toURL().toString());
+            return f1.toURI().toURL().toString();
         }
         System.out.println("Can't receive the file.");
-        return false;
+        return "false";
     }
 
     // 尝试通过传过来的 title 标签进行模糊查询,返回查询到的一条数据
