@@ -73,13 +73,33 @@ public class QrcodedbController {
             System.out.println("originalName : "+file.getOriginalFilename());
             // 开始创建文件,确保文件名不是空的
             f = new File(Objects.requireNonNull(file.getOriginalFilename()));
+            int n;
             try(InputStream in = file.getInputStream(); OutputStream os=new FileOutputStream(f)){
                 // 得到文件流.以文件流的方式输出到新文件
                 // 可以使用byte[] ss = file.getBytes();代替while循环
                 byte[] buffer = new byte[4096];
-                byte[] ss = file.getBytes();
+                while ((n = in.read(buffer,0,4096)) != -1){
+                    os.write(buffer,0,n);
+                }
+                // 读取文件第一行
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(f));
+                System.out.println(bufferedReader.readLine());
+                //输出路径
+                bufferedReader.close();
+            }catch (IOException e){
+                e.printStackTrace();
             }
-
+            // 输出 file 的URL
+            System.out.println(f.toURI().toURL().toString());
+            // 输出文件的绝对路径,这里放断点的话就能看到在项目根目录下的文件了
+            System.out.println(f.getAbsolutePath());
+            // 操作完文件之后 删除在根目录下生成的文件
+            File file1 = new File(f.toURI());
+            if (file1.delete()){
+                System.out.println("Delete complete!");
+            }else{
+                System.out.println("Delete failed");
+            }
             // 基本思路 : 将获取到的文件先存储给一个对象,之后对这个对象进行操作
             // 1. 给对象重命名,通过获取时间等内容命名新名称
             // 2. 将对象复制到最终要保存图片的路径中,然后以新名称命名文件
