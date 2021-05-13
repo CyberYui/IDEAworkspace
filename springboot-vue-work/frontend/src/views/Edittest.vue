@@ -303,7 +303,9 @@ export default {
                     // URL 拼接完毕,将其输入到 markdown 编辑器中
 
                     // 添加这个地址到 markdown 编辑器
-                    _this.addImgToMd(imgMdPath);
+                    // 首先获取编辑器的当前内容
+                    let content = _this.editor.getValue();
+                    console.log(content);
                 }).catch(error => {
                     console.error(error);
                 })
@@ -335,23 +337,26 @@ export default {
         addImgToMd(data) {
             // 传入的就是图片的地址 url
             // API---getCodeMirror() ==> Get current editor mode name
-            // 首先获取编辑器的名字
-            let editor = this.editor.getCodeMirror();
-            console.log(editor);
+            // 首先获取编辑器的当前内容
+            // let content = this.editor.getMarkdown();
+            // console.log(content);
+
+            // let editor = this.editor;
+            // console.log(editor);
             // API--getCurrentModeEditor() ==> Get current editor mode name
             // 获取编辑器的格式,应该是 markdown
-            let editorHtml = this.editor.getCurrentModeEditor();
-            console.log(editorHtml);
-            let isMarkdownMode = this.editor.isMarkdownMode();
-            if (isMarkdownMode) {
-                editor.replaceSelection(`![img](${data})`);
-            } else {
-                let range = editorHtml.getRange();
-                let img = document.createElement('img');
-                img.src = `${data}`;
-                img.alt = "img";
-                range.insertNode(img);
-            }
+            // let editorHtml = this.editor.getCurrentModeEditor();
+            // console.log(editorHtml);
+            // let isMarkdownMode = this.editor.isMarkdownMode();
+            // if (isMarkdownMode) {
+            //     editor.replaceSelection(`![img](${data})`);
+            // } else {
+            //     let range = editorHtml.getRange();
+            //     let img = document.createElement('img');
+            //     img.src = `${data}`;
+            //     img.alt = "img";
+            //     range.insertNode(img);
+            // }
         },
         getqiniuToken() {
             // this.$axios({

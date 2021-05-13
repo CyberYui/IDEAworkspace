@@ -47,10 +47,21 @@ const routes = [
     name:'Edittest',
     component: ()=> import( '../views/Edittest.vue')
   },
+  // 下面为测试 markdown-cn 编辑器用的测试路径
+  {
+    path:'/editest1',
+    name:'Editest1',
+    component: ()=> import( '../views/Editest1.vue')
+  },
   {
     path:'/videotest',
     name:'Videotest',
     component: ()=>import('../views/Videotest.vue')
+  },
+  {
+    path:'/editor',
+    name:'Editor',
+    component: ()=>import('../views/Editor.vue')
   },
 ];
 
