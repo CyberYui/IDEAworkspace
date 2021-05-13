@@ -21,7 +21,7 @@
             <div id="editor"></div>
             <!-- 创建添加图片按钮的响应框,即 html 自带的图片上传框
              只有当点击上传按钮之后才会显示图片上传框
-             @change 表示其响应的函数为 uploadFile
+             @change 表示其响应的函数为 uploadImg
              ref=files 标志着可以通过 $ref.files 获取到上传的文件名
              accept=image/* 表示接受所有格式的图像文件
              假如只支持某些格式的图片,可以这样写
@@ -30,7 +30,7 @@
                 type="file"
                 ref="files"
                 style="opacity:0"
-                @change="uploadFile"
+                @change="uploadImg"
                 accept="image/png, image/jpeg">
         </el-form-item>
         <el-form-item label="单图链接" prop="image">
@@ -190,7 +190,7 @@ export default {
             });
         },
         //新增图片的图片上传 input 响应的函数
-        uploadFile(imageGet) {
+        uploadImg(imageGet) {
             let _this = this;
             // 首先获取到 input 内容框返回的数据
             const target = imageGet.target;
@@ -258,7 +258,7 @@ export default {
                 }
                 // 上传内容
                 _this.$axios({
-                    url: "http://localhost:8181/qrcodedb/upload",
+                    url: "http://localhost:8181/qrcodedb/uploadImg",
                     method: "post",
                     // data 表示上传的对象,这里就是上传之前创建的 FormData 对象
                     data: formData,
@@ -268,17 +268,47 @@ export default {
                     // 不需要进行数据转换
                     processData: false,
                 }).then(function (data) {
-                    // data 是后端 return 的对象
-                    console.log('response.data : ' + data.data);
-                    console.log('response.data.key : ' + data.data.key);
-                    //上传成功开始拼接地址
-                    // let imgUrl = "" + response.data.key;
+                    // data 是后端 return 的对象,应该是个字符串
+                    // 强制通过 json 形式获取到数据内容
+                    console.log('response.data : ' + JSON.stringify(data));
+                    /* data 的 JSON 内容很多,需要的是这一项内容
+                    * "data":"file:/F:/IDEAworkspace/springboot-vue-work/backend/uploadFiles/uploadImgs/13-36-2021-09-36-558827.jpg",
+                    * 后台返回的还是一个 formData 数据,这个数据说白了就是一个 JSON 格式的 map 而已
+                    */
+                    //上传成功开始拆解地址信息
+                    let srcUrl = data.data;
+                    // 先输出一次看看有没有获取到上述的原始路径形式
+                    console.log(srcUrl);
+                    // 获取成功,开始执行拆解操作
+                    let imgPath = srcUrl.split("file:/",3);
+                    // 取出第二项,也就是拆解出来的绝对路径
+                    let imgAbPath = imgPath[1];
+                    // 再拆解一下,把图片的名称给拆出来
+                    let imgArr = srcUrl.split("/",8);
+                    // 根据绝对路径进行修改此内容,具体的文件名在数组的第 7 项
+                    // 对第 7 项内容再进行修改,提取出不带文件格式的文件名
+                    let imgName = imgArr[7].split(".",2);
+                    let imgRealName = imgName[0];
+                    let imgTypeName = imgName[1];
+                    // 拼接 URL 使其适应 markdown 编辑器的格式
+                    // md 格式 : ![图片alt](图片链接 "图片title")
+                    let imgMdPath = "!"+"[pic"+imgRealName+"]"+"("+imgAbPath+" \""+imgRealName+"."+imgTypeName+"\""+")";
+                    console.log(imgMdPath);
+                    // ![图片alt]
+                    // ![pic13-49-2021-11-49-437409]
+                    // 图片链接
+                    // (F:/IDEAworkspace/springboot-vue-work/backend/uploadFiles/uploadImgs/13-49-2021-11-49-437409.jpg
+                    // 图片title
+                    // "13-49-2021-11-49-437409.jpg")
+                    // URL 拼接完毕,将其输入到 markdown 编辑器中
+
                     // 添加这个地址到 markdown 编辑器
-                    // _this.addImgToMd(imgUrl);
+                    _this.addImgToMd(imgMdPath);
                 }).catch(error => {
                     console.error(error);
                 })
             } else {
+                // 上传格式有误的话会提示错误
                 alert(formData.get('name') + '的格式为 : ' + formData.get('type') + ',这不是一个合法的图片格式');
             }
 
@@ -298,9 +328,10 @@ export default {
             //     console.error(error.response);
             // });
         },
-        // ---------uploadFile 上传图片函数结束---------end---------
+        // ---------uploadImg 上传图片函数结束---------end---------
 
         //添加图片到markdown
+        // 控制台提示没有 getCodeMirror() 和 getCurrentModeEditor() 这些函数
         addImgToMd(data) {
             // 传入的就是图片的地址 url
             // API---getCodeMirror() ==> Get current editor mode name
@@ -311,16 +342,16 @@ export default {
             // 获取编辑器的格式,应该是 markdown
             let editorHtml = this.editor.getCurrentModeEditor();
             console.log(editorHtml);
-            // let isMarkdownMode = this.editor.isMarkdownMode();
-            // if (isMarkdownMode) {
-            //     editor.replaceSelection(`![img](${data})`);
-            // } else {
-            //     let range = editorHtml.getRange();
-            //     let img = document.createElement('img');
-            //     img.src = `${data}`;
-            //     img.alt = "img";
-            //     range.insertNode(img);
-            // }
+            let isMarkdownMode = this.editor.isMarkdownMode();
+            if (isMarkdownMode) {
+                editor.replaceSelection(`![img](${data})`);
+            } else {
+                let range = editorHtml.getRange();
+                let img = document.createElement('img');
+                img.src = `${data}`;
+                img.alt = "img";
+                range.insertNode(img);
+            }
         },
         getqiniuToken() {
             // this.$axios({
