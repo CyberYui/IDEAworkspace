@@ -32,33 +32,80 @@ public class QrcodedbController {
         this.qrcodedbService = qrcodedbService;
     }
 
+    /**
+     * @description:
+     * @className: QrcodedbController
+     * @author: Cyber
+     * @date: 2021/5/13 8:51
+     * @param:
+     * @return: java.util.List<backend.entity.Qrcodedb>
+     */
     @GetMapping("/list")
     public List<Qrcodedb> list() {
         return this.qrcodedbService.list();
     }
 
+    /**
+     * @description:
+     * @className: QrcodedbController
+     * @author: Cyber
+     * @date: 2021/5/13 8:52
+     * @param: id
+     * @return: boolean
+     */
     @DeleteMapping("/delete/{id}")
     public boolean delete(@PathVariable("id") Integer id) {
         return this.qrcodedbService.removeById(id);
     }
 
+    /**
+     * @description:
+     * @className: QrcodedbController
+     * @author: Cyber
+     * @date: 2021/5/13 8:52
+     * @param: id
+     * @return: backend.entity.Qrcodedb
+     */
     @GetMapping("/find/{id}")
     public Qrcodedb find(@PathVariable("id") Integer id) {
         return this.qrcodedbService.getById(id);
     }
 
+    /**
+     * @description:
+     * @className: QrcodedbController
+     * @author: Cyber
+     * @date: 2021/5/13 8:52
+     * @param: qrcodedb
+     * @return: boolean
+     */
     @PutMapping("/update")
     public boolean update(@RequestBody Qrcodedb qrcodedb) {
         return this.qrcodedbService.updateById(qrcodedb);
     }
-
+    
+    /**
+     * @description:
+     * @className: QrcodedbController
+     * @author: Cyber
+     * @date: 2021/5/13 8:52
+     * @param: qrcodedb
+     * @return: boolean
+     */
     @PostMapping("/add")
     public boolean add(@RequestBody Qrcodedb qrcodedb) {
         return this.qrcodedbService.save(qrcodedb);
     }
 
-
-    @PostMapping("/upload")
+    /**
+     * @description:
+     * @className: QrcodedbController
+     * @author: Cyber
+     * @date: 2021/5/13 8:52
+     * @param: file
+     * @return: java.lang.String
+     */
+    @PostMapping("/uploadImg")
     public String upload(@RequestParam("file") MultipartFile file) throws IOException {
         // 由于前端发送的是 FormData 类型内容,所以这里用
         // RequestParam 注解获取内容
@@ -150,6 +197,8 @@ public class QrcodedbController {
                 e.printStackTrace();
             }
 
+            // 输出 file 的URI
+            System.out.println(f.toURI().toString());
             // 输出 file 的URL
             System.out.println(f.toURI().toURL().toString());
             // 输出文件的绝对路径,这里放断点的话就能看到在项目根目录下的文件了
