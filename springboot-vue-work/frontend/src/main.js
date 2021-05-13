@@ -5,6 +5,7 @@ import store from './store';
 // 在本文件导入插件 js 代码
 import './plugins/axios';
 import './plugins/element.js';
+import 'mavon-editor/dist/mavon-editor.js'
 
 // 导入 markdown 编辑器
 import mavonEditor from 'mavon-editor'

@@ -11,12 +11,13 @@
 </template>
 
 <script>
+
 export default {
     name: "Editor",
     data() {
         return {
             markdownOption: {
-                bold:true, // 粗体
+                bold: true, // 粗体
                 italic: true, // 斜体
                 header: true, // 标题
                 underline: true, // 下划线
@@ -49,6 +50,7 @@ export default {
                 /* 2.2.1 */
                 subfield: true, // 单双栏模式
                 preview: false, // 预览
+                shortCut: false, // 禁用快捷键
             },
             // 导入不同组件
             handbook: "#### how to use mavonEditor In this profile"
@@ -61,12 +63,12 @@ export default {
     mounted() {
 
     },
-    methods:{
+    methods: {
         // 绑定@imgAdd event
-        imgAdd(pos,$file){
+        imgAdd(pos, $file) {
             // 第一步.将图片上传到服务器.
             let formData = new FormData();
-            formData.append('image', $file);
+            formData.append('file', $file);
             let config = {
                 headers: {
                     // 设定上传内容类型
@@ -80,35 +82,30 @@ export default {
                 data: formData,
                 config: config,
                 processData: false,
-            }).then(function (url) {
+            }).then((url) => {
                 //上传成功开始拆解地址信息
                 let srcUrl = url.data;
                 // 先输出一次看看有没有获取到上述的原始路径形式
                 console.log(srcUrl);
                 // 获取成功,开始执行拆解操作
-                let imgPath = srcUrl.split("file:/",3);
+                let imgPath = srcUrl.split("file:/", 3);
                 // 取出第二项,也就是拆解出来的绝对路径
                 let imgAbPath = imgPath[1];
                 // 再拆解一下,把图片的名称给拆出来
-                let imgArr = srcUrl.split("/",8);
+                let imgArr = srcUrl.split("/", 8);
                 // 根据绝对路径进行修改此内容,具体的文件名在数组的第 7 项
                 // 对第 7 项内容再进行修改,提取出不带文件格式的文件名
-                let imgName = imgArr[7].split(".",2);
+                let imgName = imgArr[7].split(".", 2);
                 let imgRealName = imgName[0];
                 let imgTypeName = imgName[1];
                 // 拼接 URL 使其适应 markdown 编辑器的格式
                 // md 格式 : ![图片alt](图片链接 "图片title")
-                let imgMdPath = "!"+"[pic"+imgRealName+"]"+"("+imgAbPath+" \""+imgRealName+"."+imgTypeName+"\""+")";
+                let imgMdPath = "!" + "[pic" + imgRealName + "]" + "(" + imgAbPath + " \"" + imgRealName + "." + imgTypeName + "\"" + ")";
                 console.log(imgMdPath);
-                // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
-                /**
-                 * $vm 指为mavonEditor实例，可以通过如下两种方式获取
-                 * 1. 通过引入对象获取: `import {mavonEditor} from ...` 等方式引入后，`$vm`为`mavonEditor`
-                 * 2. 通过$refs获取: html声明ref : `<mavon-editor ref=md ></mavon-editor>，`$vm`为 `this.$refs.md`
-                 */
-                $vm.$img2Url(imgArr[7], url);
+                // 接下来就是如何把这个绝对路径放到 markdown 里面了
+                this.$refs.md.$img2Url(pos,imgMdPath);
             })
-        }
+        },
     }
 }
 
