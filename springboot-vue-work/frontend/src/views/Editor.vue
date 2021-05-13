@@ -102,8 +102,10 @@ export default {
                 // md 格式 : ![图片alt](图片链接 "图片title")
                 let imgMdPath = "!" + "[pic" + imgRealName + "]" + "(" + imgAbPath + " \"" + imgRealName + "." + imgTypeName + "\"" + ")";
                 console.log(imgMdPath);
-                // 接下来就是如何把这个绝对路径放到 markdown 里面了
+                // 把这个绝对路径放到 markdown 里面
                 this.$refs.md.$img2Url(pos,imgMdPath);
+                // 出现问题,浏览器无法读取本地路径
+                // 解决思路test : 把绝对路径改写成相对路径,然后再去读取
             })
         },
     }
