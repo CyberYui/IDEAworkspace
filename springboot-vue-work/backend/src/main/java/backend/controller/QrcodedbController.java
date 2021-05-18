@@ -107,6 +107,19 @@ public class QrcodedbController {
      */
     @PostMapping("/uploadImg")
     public String upload(@RequestParam("file") MultipartFile file) throws IOException {
+        // 基本思路 : 将获取到的文件先存储给一个对象,之后对这个对象进行操作
+        // 1. 给对象重命名,通过获取时间等内容命名新名称
+        // 2. 将对象复制到最终要保存图片的路径中,然后以新名称命名文件
+        // 3. 返回最终的图片路径
+        // 最终要控制的就是相关的 file 各种类使用,这个还得再看
+        // 本项目只是个单表的小项目,要想使用企业类项目还得再找
+        // 对于视频的思路:
+        // 1. 限定视频的上传大小
+        // 2. 通过断点续传来控制视频的上传(选做)
+        // 断点续传的网址:https://www.bilibili.com/video/BV16i4y1A7EN?p=4&spm_id_from=pageDriver
+        // 理应也有个视频的上传路径
+        // String vidUploadPath = "\\resources\\videoDir";
+
         // 由于前端发送的是 FormData 类型内容,所以这里用
         // RequestParam 注解获取内容
         if (!file.isEmpty()) {
@@ -133,6 +146,7 @@ public class QrcodedbController {
 
             // 定义输出路径,拼凑出适应当前系统的路径
             // 为了防止浏览器阻止访问本地路径,直接放到前端目录下,使用相对路径
+            String imgUploadPathTest = "..\\frontend\\resources\\uploadFiles\\uploadImgs\\";
             String imgUploadPath = ".\\uploadFiles\\uploadImgs\\" ;
 
             // --------------------delete
@@ -211,21 +225,12 @@ public class QrcodedbController {
             } else {
                 System.out.println("Delete failed");
             }
-            // 基本思路 : 将获取到的文件先存储给一个对象,之后对这个对象进行操作
-            // 1. 给对象重命名,通过获取时间等内容命名新名称
-            // 2. 将对象复制到最终要保存图片的路径中,然后以新名称命名文件
-            // 3. 返回最终的图片路径
-            // 最终要控制的就是相关的 file 各种类使用,这个还得再看
-            // 本项目只是个单表的小项目,要想使用企业类项目还得再找
-            // 对于视频的思路:
-            // 1. 限定视频的上传大小
-            // 2. 通过断点续传来控制视频的上传(选做)
-            // 断点续传的网址:https://www.bilibili.com/video/BV16i4y1A7EN?p=4&spm_id_from=pageDriver
-            // 理应也有个视频的上传路径
-            // String vidUploadPath = "\\resources\\videoDir";
 
+            // 在这里获取一下新生成的文件的路径,看看长啥样
+            String realPath = f1.getPath().toString();
+            System.out.println("realPath = "+realPath);
             // 设置将文件放在固定路径,并重新命名
-            System.out.println(f1.toURI().toURL().toString());
+            System.out.println("realURL = "+f1.toURI().toURL().toString());
             return f1.toURI().toURL().toString();
         }
         System.out.println("Can't receive the file.");
