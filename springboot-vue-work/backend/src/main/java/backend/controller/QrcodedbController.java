@@ -125,18 +125,17 @@ public class QrcodedbController {
             // 切分获取到的文件源名,拆解出格式
             String srcFileName = file.getOriginalFilename().toString();
             String[] srcFileNameArr = srcFileName.split("\\.");
+            // 输出获取到的文件名称和格式名
             System.out.println(srcFileNameArr[0]);
             System.out.println(srcFileNameArr[1]);
-            // 循环输出获取到的文件名称和格式名
             // 数组的第二项为格式
             String fileFormat = srcFileNameArr[1];
 
             // 定义输出路径,拼凑出适应当前系统的路径
             // 为了防止浏览器阻止访问本地路径,直接放到前端目录下,使用相对路径
-            String imgUploadPath = "F:\\IDEAworkspace\\springboot-vue-work\\backend" +
-                    "\\uploadFiles" +
-                    "\\uploadImgs\\";
+            String imgUploadPath = ".\\uploadFiles\\uploadImgs\\" ;
 
+            // --------------------delete
             // 开始创建文件,确保文件名不是空的
             // 需要在这里修改这一句代码,实现将文件复制到可选的路径
             f = new File(Objects.requireNonNull(file.getOriginalFilename()));
@@ -161,6 +160,7 @@ public class QrcodedbController {
                 e.printStackTrace();
             }
             //输出路径
+            // --------------------delete
 
             // 文件的正确性确定了,将这个文件保存到相应的路径中,这个文件不会被删除
 
