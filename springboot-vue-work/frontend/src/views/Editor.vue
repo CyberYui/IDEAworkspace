@@ -110,7 +110,7 @@ export default {
                 // 不论图片如何保存,这里都使用相对路径在 markdown 里面显示
                 // 首先绝对路径为 F:\IDEAworkspace\springboot-vue-work\frontend\resources\uploadFiles\uploadImgs 这一目录
                 // 本 vue 文件与上述目录的相对路径为 ../../resources/uploadFiles/uploadImgs
-                let imgMdPath = "../resources/uploadFiles/uploadImgs/" + imgRealName + "." + imgTypeName;
+                let imgMdPath = "../../resources/uploadFiles/uploadImgs/" + imgRealName + "." + imgTypeName;
                 console.log(imgMdPath);
                 // 把这个相对路径插入到 markdown 编辑器里面
                 this.$refs.md.$img2Url(pos, imgMdPath);
