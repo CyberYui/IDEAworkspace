@@ -112,10 +112,8 @@ export default {
                 // 本 vue 文件与上述目录的相对路径为 ../../resources/uploadFiles/uploadImgs
                 let imgMdPath = "../resources/uploadFiles/uploadImgs/" + imgRealName + "." + imgTypeName;
                 console.log(imgMdPath);
-                // 把这个绝对路径放到 markdown 里面
+                // 把这个相对路径插入到 markdown 编辑器里面
                 this.$refs.md.$img2Url(pos, imgMdPath);
-                // 出现问题,浏览器无法读取本地路径
-                // 解决思路test : 把绝对路径改写成相对路径,然后再去读取
             })
         },
     }
