@@ -145,9 +145,8 @@ public class QrcodedbController {
             String fileFormat = srcFileNameArr[1];
 
             // 定义输出路径,拼凑出适应当前系统的路径
-            // 为了防止浏览器阻止访问本地路径,直接放到前端目录下,使用相对路径
-            String imgUploadPathTest = "..\\frontend\\resources\\uploadFiles\\uploadImgs\\";
-            String imgUploadPath = ".\\uploadFiles\\uploadImgs\\" ;
+            // 为了防止浏览器阻止访问本地路径,直接放到前端目录下,使用相对路径保存
+            String imgUploadPath = "..\\frontend\\resources\\uploadFiles\\uploadImgs\\";
 
             // --------------------delete
             // 开始创建文件,确保文件名不是空的

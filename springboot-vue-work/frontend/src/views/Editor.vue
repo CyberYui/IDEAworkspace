@@ -86,24 +86,34 @@ export default {
                 //上传成功开始拆解地址信息
                 let srcUrl = url.data;
                 // 先输出一次看看有没有获取到上述的原始路径形式
-                console.log(srcUrl);
+                console.log('srcUrl = ' + srcUrl);
                 // 获取成功,开始执行拆解操作
+                // 拆解的关键字为 file:/
                 let imgPath = srcUrl.split("file:/", 3);
                 // 取出第二项,也就是拆解出来的绝对路径
                 let imgAbPath = imgPath[1];
                 // 再拆解一下,把图片的名称给拆出来
-                let imgArr = srcUrl.split("/", 8);
-                // 根据绝对路径进行修改此内容,具体的文件名在数组的第 7 项
-                // 对第 7 项内容再进行修改,提取出不带文件格式的文件名
-                let imgName = imgArr[7].split(".", 2);
+                // F:/IDEAworkspace/springboot-vue-work/backend/../frontend/resources/uploadFiles/uploadImgs/18-05-2021-02-05-122777.jpg
+                let imgArr = srcUrl.split("/", 11);
+                console.log('imgArr' + imgArr);
+                // 根据绝对路径进行修改此内容,具体的文件名在数组的第 11 项
+                // 对第 11 项内容再进行修改,提取出不带文件格式的文件名
+                // 数组从 0 开始数,第 11 项下标为 10
+                let imgName = imgArr[10].split(".", 2);
                 let imgRealName = imgName[0];
+                // 输出一次不带格式的文件名
+                console.log('imgRealName = ' + imgRealName);
+                // 保存一下文件的格式名
                 let imgTypeName = imgName[1];
                 // 拼接 URL 使其适应 markdown 编辑器的格式
                 // md 格式 : ![图片alt](图片链接 "图片title")
-                let imgMdPath = "!" + "[pic" + imgRealName + "]" + "(" + imgAbPath + " \"" + imgRealName + "." + imgTypeName + "\"" + ")";
+                // 不论图片如何保存,这里都使用相对路径在 markdown 里面显示
+                // 首先绝对路径为 F:\IDEAworkspace\springboot-vue-work\frontend\resources\uploadFiles\uploadImgs 这一目录
+                // 本 vue 文件与上述目录的相对路径为 ../../resources/uploadFiles/uploadImgs
+                let imgMdPath = "../resources/uploadFiles/uploadImgs/" + imgRealName + "." + imgTypeName;
                 console.log(imgMdPath);
                 // 把这个绝对路径放到 markdown 里面
-                this.$refs.md.$img2Url(pos,imgMdPath);
+                this.$refs.md.$img2Url(pos, imgMdPath);
                 // 出现问题,浏览器无法读取本地路径
                 // 解决思路test : 把绝对路径改写成相对路径,然后再去读取
             })
