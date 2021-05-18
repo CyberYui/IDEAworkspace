@@ -10,7 +10,6 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -85,7 +84,7 @@ public class QrcodedbController {
     }
     
     /**
-     * @description:
+     * @description: 表单的添加操作实现
      * @className: QrcodedbController
      * @author: Cyber
      * @date: 2021/5/13 8:52
@@ -98,20 +97,25 @@ public class QrcodedbController {
     }
 
     /**
-     * @description:
+     * @description: 上传图片的后端实现
      * @className: QrcodedbController
      * @author: Cyber
      * @date: 2021/5/13 8:52
      * @param: file
-     * @return: java.lang.String
+     * @return: 返回图片的 URL
      */
     @PostMapping("/uploadImg")
-    public String upload(@RequestParam("file") MultipartFile file) throws IOException {
+    public String uploadImg(@RequestParam("file") MultipartFile file) throws IOException {
         // 基本思路 : 将获取到的文件先存储给一个对象,之后对这个对象进行操作
         // 1. 给对象重命名,通过获取时间等内容命名新名称
         // 2. 将对象复制到最终要保存图片的路径中,然后以新名称命名文件
         // 3. 返回最终的图片路径
-        // 最终要控制的就是相关的 file 各种类使用,这个还得再看
+        // 现阶段的问题:
+        // 1. npm run serve 是跑在一个虚拟环境下的,无法实现相对路径的取图
+        // 2. 要想跑在服务器上,就要在这边的低层代码里确定好服务器的存图路径
+        // 解决方案:
+        // 1. 了解服务器路径,然后直接在这边写死,然后部署进行测试和修改
+        //
         // 本项目只是个单表的小项目,要想使用企业类项目还得再找
         // 对于视频的思路:
         // 1. 限定视频的上传大小
@@ -148,35 +152,6 @@ public class QrcodedbController {
             // 为了防止浏览器阻止访问本地路径,直接放到前端目录下,使用相对路径保存
             String imgUploadPath = "..\\frontend\\resources\\uploadFiles\\uploadImgs\\";
 
-            // --------------------delete
-            // 开始创建文件,确保文件名不是空的
-            // 需要在这里修改这一句代码,实现将文件复制到可选的路径
-            f = new File(Objects.requireNonNull(file.getOriginalFilename()));
-            // 创建用于计算的循环数
-            int n;
-            try (
-                    InputStream in = file.getInputStream();
-                    OutputStream os = new FileOutputStream(f)) {
-                // 得到文件流.以文件流的方式输出到新文件
-                // 给一个缓存空间值,给予文件用于传输
-                byte[] buffer = new byte[4096];
-                while ((n = in.read(buffer, 0, 4096)) != -1) {
-                    os.write(buffer, 0, n);
-                }
-                // 读取文件第一行
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(f));
-                // 输出一下,这里可能是乱码,乱码就代表读取到内容了
-                // System.out.println(bufferedReader.readLine());
-                // 关闭该流并释放与之关联的所有资源
-                bufferedReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //输出路径
-            // --------------------delete
-
-            // 文件的正确性确定了,将这个文件保存到相应的路径中,这个文件不会被删除
-
             // 创建随机日期
             Date localDate = new Date();
             SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-mm-yyyy-hh-mm-ss");
@@ -188,6 +163,9 @@ public class QrcodedbController {
             int numRan = ran1.nextInt(10000);
             String numRanS = String.valueOf(numRan);
 
+            // 开始创建文件,确保文件名不是空的
+            // 这里修改了代码,实现将文件复制到可选的路径
+            // 文件的正确性确定了,将这个文件保存到相应的路径中,这个文件不会被删除
             File f1 = new File(imgUploadPath+createFdate+numRanS+"."+fileFormat);
             // 写入文件
             // 创建用于计算的循环数
@@ -234,6 +212,20 @@ public class QrcodedbController {
         }
         System.out.println("Can't receive the file.");
         return "false";
+    }
+
+    /**
+     * @description: 上传视频的后端实现
+     * @className: QrcodedbController
+     * @author: Cyber
+     * @date: 2021/5/18 17:44
+     * @param: file1
+     * @return: 返回视频的 URL
+     */
+    @PostMapping("/uploadVideo")
+    public String uploadVideo(@RequestParam("file") MultipartFile file1) throws IOException{
+        System.out.println("这是上传视频的后端实现");
+        return "testing complete";
     }
 
     // 尝试通过传过来的 title 标签进行模糊查询,返回查询到的一条数据
