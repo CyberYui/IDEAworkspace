@@ -518,21 +518,16 @@ export default {
 
                     // 分解正确,开始填入markdown 编辑器
                     // 拼接 URL 使其适应 markdown 编辑器的格式
-                    // md 格式 : ![图片alt](图片链接 "图片title")
-                    // let videoMdPath = "!"+"[pic"+videoRealName+"]"+"("+videoAbPath+" \""+videoRealName+"."+videoTypeName+"\""+")";
-                    // console.log(imgMdPath);
-                    // ![图片alt]
-                    // ![pic13-49-2021-11-49-437409]
-                    // 图片链接
-                    // (F:/IDEAworkspace/springboot-vue-work/backend/uploadFiles/uploadImgs/13-49-2021-11-49-437409.jpg
-                    // 图片title
-                    // "13-49-2021-11-49-437409.jpg")
+                    // md 格式 : <iframe height=498 width=510 src="视频地址" frameborder=0 allowfullscreen></iframe>
+                    let videoMdPath =
+                        "<iframe height=498 width=510 src="+"../../resources/uploadFiles/uploadImgs/"+videoRealName+"."+videoTypeName+" frameborder=0 allowfullscreen></iframe>";
+                    console.log(videoMdPath);
                     // URL 拼接完毕,将其输入到 markdown 编辑器中
 
                     // 添加这个地址到 markdown 编辑器
                     // 首先获取编辑器的当前内容
-                    // let content = _this.editor.getValue();
-                    // console.log(content);
+                    let content = _this.editor.getValue();
+                    console.log(content);
                 }).catch(error => {
                     console.error(error);
                 })
