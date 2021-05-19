@@ -133,8 +133,6 @@ public class QrcodedbController {
             System.out.println("Receive file well !");
             // 开始对获取到的文件进行操作
             // 注意的是这里获取到的是 MultipartFile 对象,需要先转为 File 对象进行操作
-            // 首先创建一个 file 对象,用来当最终操作的对象
-            File f = null;
             // 输出文件的新 name,即上传传输过来的文件名
             System.out.println("getName : " + file.getName());
             // 输出源文件的名称,即上传之前文件叫啥
@@ -190,18 +188,11 @@ public class QrcodedbController {
             }
 
             // 输出 file 的URI
-            System.out.println(f.toURI().toString());
+            System.out.println("toURI() = "+f1.toURI().toString());
             // 输出 file 的URL
-            System.out.println(f.toURI().toURL().toString());
+            System.out.println("toURI().toURL() = "+f1.toURI().toURL().toString());
             // 输出文件的绝对路径,这里放断点的话就能看到在项目根目录下的文件了
-            System.out.println(f.getAbsolutePath());
-            // 操作完文件之后 删除在根目录下生成的文件
-            File file1 = new File(f.toURI());
-            if (file1.delete()) {
-                System.out.println("Delete complete!");
-            } else {
-                System.out.println("Delete failed");
-            }
+            System.out.println("getAbsolutePath() = "+f1.getAbsolutePath());
 
             // 在这里获取一下新生成的文件的路径,看看长啥样
             String realPath = f1.getPath().toString();
@@ -223,9 +214,93 @@ public class QrcodedbController {
      * @return: 返回视频的 URL
      */
     @PostMapping("/uploadVideo")
-    public String uploadVideo(@RequestParam("file") MultipartFile file1) throws IOException{
-        System.out.println("这是上传视频的后端实现");
-        return "testing complete";
+    public String uploadVideo(@RequestParam("file") MultipartFile file) throws IOException{
+        // 获取到视频文件,准备开始操作
+        if (!file.isEmpty()) {
+            // 文件大小
+            System.out.println(file.getSize());
+            // 提示文件获取成功
+            System.out.println("Receive file well !");
+            // 开始对获取到的文件进行操作
+            // 注意的是这里获取到的是 MultipartFile 对象,需要先转为 File 对象进行操作
+            // 输出文件的新 name,即上传传输过来的文件名
+            System.out.println("getName : " + file.getName());
+            // 输出源文件的名称,即上传之前文件叫啥
+            System.out.println("originalName : " + file.getOriginalFilename());
+            // 切分获取到的文件源名,拆解出格式
+            String srcFileName = file.getOriginalFilename().toString();
+            String[] srcFileNameArr = srcFileName.split("\\.");
+            // 输出获取到的文件名称和格式名
+            System.out.println("File name is : "+srcFileNameArr[0]);
+            System.out.println("File type is : "+srcFileNameArr[1]);
+            // 数组的第二项为格式
+            String fileFormat = srcFileNameArr[1];
+
+            // 定义输出路径,拼凑出适应当前系统的路径
+            // 为了防止浏览器阻止访问本地路径,直接放到前端目录下,使用相对路径保存
+            String imgUploadPath = "..\\frontend\\resources\\uploadFiles\\uploadVideos\\";
+
+            // 创建随机日期
+            Date localDate = new Date();
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-mm-yyyy-hh-mm-ss");
+            String createFdate =dateFormatter.format(localDate);
+
+            // 创建随机数
+            Random ran1 = new Random();
+            // 生成 0~10000 中的随机数
+            int numRan = ran1.nextInt(10000);
+            String numRanS = String.valueOf(numRan);
+
+            // 开始创建文件,确保文件名不是空的
+            // 这里修改了代码,实现将文件复制到可选的路径
+            // 文件的正确性确定了,将这个文件保存到相应的路径中,这个文件不会被删除
+            File f1 = new File(imgUploadPath+createFdate+numRanS+"."+fileFormat);
+            // 写入文件
+            // 创建用于计算的循环数
+            int i;
+            try (
+                    InputStream in1 = file.getInputStream();
+                    OutputStream os1 = new FileOutputStream(f1)) {
+                // 得到文件流.以文件流的方式输出到新文件
+                // 给一个缓存空间值,给予文件用于传输
+                byte[] buffer = new byte[4096];
+                while ((i = in1.read(buffer, 0, 4096)) != -1) {
+                    os1.write(buffer, 0, i);
+                }
+                // 读取文件第一行
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(f1));
+                // 输出一下,这里可能是乱码,乱码就代表读取到内容了
+                //System.out.println(bufferedReader.readLine());
+                // 关闭该流并释放与之关联的所有资源
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // 输出 file 的URI
+            System.out.println(f1.toURI().toString());
+            // 输出 file 的URL
+            System.out.println(f1.toURI().toURL().toString());
+            // 输出文件的绝对路径,这里放断点的话就能看到在项目根目录下的文件了
+            System.out.println(f1.getAbsolutePath());
+            // 以下内容用于测试
+            // 操作完文件之后 删除在目录下生成的文件
+            //File file2 = new File(f1.toURI());
+            //if (file2.delete()) {
+            //    System.out.println("Delete complete!");
+            //} else {
+            //    System.out.println("Delete failed");
+            //}
+
+            // 在这里获取一下新生成的文件的路径,看看长啥样
+            String realPath = f1.getPath().toString();
+            System.out.println("realPath = "+realPath);
+            // 设置将文件放在固定路径,并重新命名
+            System.out.println("realURL = "+f1.toURI().toURL().toString());
+            return f1.toURI().toURL().toString();
+        }
+        System.out.println("Can't receive the file.");
+        return "false";
     }
 
     // 尝试通过传过来的 title 标签进行模糊查询,返回查询到的一条数据

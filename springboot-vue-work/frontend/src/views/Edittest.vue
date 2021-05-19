@@ -490,29 +490,36 @@ export default {
                     console.log(data);
                     // data 是后端 return 的对象,应该是个字符串
                     // 强制通过 json 形式获取到数据内容
-                    // console.log('response.data : ' + JSON.stringify(data));
+                    console.log('response.data : ' + JSON.stringify(data));
                     /* data 的 JSON 内容很多,需要的是这一项内容
-                    * "data":"file:/F:/IDEAworkspace/springboot-vue-work/backend/uploadFiles/uploadImgs/13-36-2021-09-36-558827.jpg",
+                    * data: "file:/F:/IDEAworkspace/springboot-vue-work/backend…oadFiles/uploadVideos/19-40-2021-10-40-274915.mp4",
                     * 后台返回的还是一个 formData 数据,这个数据说白了就是一个 JSON 格式的 map 而已
                     */
                     //上传成功开始拆解地址信息
-                    // let srcUrl = data.data;
+                    let srcUrl = data.data;
                     // 先输出一次看看有没有获取到上述的原始路径形式
-                    // console.log(srcUrl);
+                    console.log(srcUrl);
                     // 获取成功,开始执行拆解操作
-                    // let imgPath = srcUrl.split("file:/",3);
+                    let videoPath = srcUrl.split("file:/",3);
                     // 取出第二项,也就是拆解出来的绝对路径
-                    // let imgAbPath = imgPath[1];
+                    let videoAbPath = videoPath[1];
+                    // 输出一下,看看是否正确
+                    console.log('videoAbPath = '+videoAbPath);
+                    // F:/IDEAworkspace/springboot-vue-work/backend/../frontend/resources/uploadFiles/uploadVideos/19-55-2021-10-55-214047.mp4
                     // 再拆解一下,把图片的名称给拆出来
-                    // let imgArr = srcUrl.split("/",8);
-                    // 根据绝对路径进行修改此内容,具体的文件名在数组的第 7 项
-                    // 对第 7 项内容再进行修改,提取出不带文件格式的文件名
-                    // let imgName = imgArr[7].split(".",2);
-                    // let imgRealName = imgName[0];
-                    // let imgTypeName = imgName[1];
+                    let videoArr = videoAbPath.split("/",10);
+                    // 根据绝对路径进行修改此内容,具体的文件名在数组的第 9 项
+                    // 对第9 项内容再进行修改,提取出不带文件格式的文件名
+                    let videoName = videoArr[9].split(".",2);
+                    let videoRealName = videoName[0];
+                    // videoRealName = 19-58-2021-10-58-017544
+                    let videoTypeName = videoName[1];
+                    // videoTypeName = mp4
+
+                    // 分解正确,开始填入markdown 编辑器
                     // 拼接 URL 使其适应 markdown 编辑器的格式
                     // md 格式 : ![图片alt](图片链接 "图片title")
-                    // let imgMdPath = "!"+"[pic"+imgRealName+"]"+"("+imgAbPath+" \""+imgRealName+"."+imgTypeName+"\""+")";
+                    // let videoMdPath = "!"+"[pic"+videoRealName+"]"+"("+videoAbPath+" \""+videoRealName+"."+videoTypeName+"\""+")";
                     // console.log(imgMdPath);
                     // ![图片alt]
                     // ![pic13-49-2021-11-49-437409]
@@ -531,7 +538,7 @@ export default {
                 })
             } else {
                 // 上传格式有误的话会提示错误
-                alert(formData.get('name') + '的格式为 : ' + formData.get('type') + ',这不是一个合法的图片格式');
+                alert(formData.get('name') + '的格式为 : ' + formData.get('type') + ',这不是一个合法的视频格式');
             }
         },
 
