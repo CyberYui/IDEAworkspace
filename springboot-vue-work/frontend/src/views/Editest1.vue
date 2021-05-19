@@ -33,7 +33,7 @@
                             style="border:none;background:none;color:#555555;"
                             aria-hidden="true"
                             @click="getFile"
-                            :title="`上传视频`">
+                            :title="`上传视频,尽量只上传一个视频,上传多份只有最后上传的视频有效`">
                         </button>
                     </template>
                 </mavon-editor>
@@ -205,7 +205,6 @@ export default {
                 this.$refs.md.$img2Url(pos, imgMdPath);
             })
         },
-
 
         uploadVideo(videoGet) {
             let _this = this;
