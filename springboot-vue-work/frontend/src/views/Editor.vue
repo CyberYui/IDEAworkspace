@@ -1,11 +1,13 @@
 <template>
     <!-- 本页面用来尝试使用国产 markdown 编辑器替代原有的编辑器 -->
+    <!-- 这仅仅是个测试用页面,实际页面参照 editest1 -->
     <div class="mavonEditor">
         <mavon-editor
             ref=md
             @imgAdd="imgAdd"
             :toolbars="markdownOption"
             v-model="handbook"
+            style="height: 500px"
         >
             <template slot="left-toolbar-before">
                 <button
@@ -253,14 +255,18 @@ export default {
                     // 拼接 URL 使其适应 markdown 编辑器的格式
                     // md 格式 : <iframe height=498 width=510 src="视频地址" frameborder=0 allowfullscreen></iframe>
                     let videoMdPath =
-                        "<iframe height=498 width=510 src=" + "../../resources/uploadFiles/uploadImgs/" + videoRealName + "." + videoTypeName + " frameborder=0 allowfullscreen></iframe>";
+                        "<iframe src=" + "../../resources/uploadFiles/uploadImgs/" + videoRealName + "." + videoTypeName + " scrolling=\"no\" border=\"0\" frameborder=\"no\" framespacing=\"0\" allowfullscreen=\"true\"></iframe>";
                     console.log(videoMdPath);
                     // URL 拼接完毕,将其输入到 markdown 编辑器中
 
                     // 添加这个地址到 markdown 编辑器
                     // 首先获取编辑器的当前内容
-                    let content = _this.editor.getValue();
+                    let content = _this.$refs.md.$data.d_value;
+                    // 输出一下,看看是不是获取到了
                     console.log(content);
+                    // 获取成功,修改内容
+                    _this.$refs.md.$data.d_value = content+videoMdPath;
+                    // 添加成功,结束
                 }).catch(error => {
                     console.error(error);
                 })
@@ -283,8 +289,8 @@ body {
 
 .mavonEditor {
     background-color: white;
-    margin: 60px;
-    width: auto;
+    margin: 0;
+    width: 900px;
     height: 500px;
 }
 </style>

@@ -1,4 +1,5 @@
 <template>
+    <!-- 这个文件现已废弃 -->
     <!-- model='article' 表示整个表单和下面的 article 对象绑定-->
     <el-form
         label-position="right"
